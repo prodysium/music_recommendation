@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>AAFCJM | Accueil</title>
+    <%- include("balise_head.ejs") %>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-offset-2 col-md-offset-1 col-md-10 col-lg-8">
+            <p>Hello World !</p>
+            <form method="post" action="/">
+                <label>Enter Your Name</label><br>
+                <input type="text" name="firstName" placeholder="Enter first name..." required>
+                <input type="text" name="lastName" placeholder="Enter last name..." required>
+                <input type="submit" value="Add Name">
+            </form>
+            <div class="col-lg-offset-2 col-md-offset-1"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
