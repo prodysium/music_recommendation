@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <title>AAFCJM | Signup</title>
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="static/my_css/login.css">
+    <link rel="stylesheet" href="static/my_css/style.css">
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/sign-in/">
+    <%- include("balise_head.ejs") %>
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+
+
+
+</head>
+<body class="text-center">
+
+<main class="form-signin">
+
+    <script>console.log(document)</script>
+
+    <form method="post" action="/signup">
+        <h1 class="h3 mb-3 fw-normal text-color-signin">Créer un compte</h1>
+
+        <div class="form-floating">
+            <input type="text" class="form-control" id="floatingInputMail" name="mail" placeholder="Email">
+            <label for="floatingInputMail">Email</label>
+        </div>
+        <div class="form-floating">
+            <input type="text" class="form-control" id="floatingInput" name="pseudo" placeholder="pseudo">
+            <label for="floatingInput">Pseudo</label>
+        </div>
+        <div class="form-floating">
+            <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="mot de passe">
+            <label for="floatingPassword">Mot De Passe</label>
+        </div>
+
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Creer mon compte</button>
+    </form>
+</main>
+
+<%if( typeof(mes_erreurs) ==="undefined") {%>
+    <script>
+        console.log("pas d'erreur")</script>
+
+<%} else {%>
+
+
+    <script>
+        let mess_err = '<%= mes_erreurs%>' ;
+        for (const messErrKey in mess_err) {
+            console.log(messErrKey);
+        }
+    </script>
+<%}%>
+
+</body>
+</html>
