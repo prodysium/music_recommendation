@@ -19,7 +19,6 @@ router.get('/signup', (req, res) => {
 //retour de la page signup
 router.post('/signup',[
     check('mail').isLength({ min: 1 }).withMessage('Please Enter a valid Mail'),
-
     check('mail').isEmail().withMessage('Email is not well formed'),
 
     check('pseudo').isLength({ min: 3 }).withMessage('Please Enter a valid Pseudo'),
@@ -45,13 +44,20 @@ router.post('/signup',[
         if (!errors.isEmpty()) {
             for (const i of errors.array()) {
                 erreurs[i] = i.msg;
-
             }
         }
-
         res.render('signup.ejs', {mes_erreurs : erreurs});
     }});
 
+router.get("/test_index1",(req,res) => {
+    res.render('profile.ejs', {page : "favories"});
+});
+
+router.get("/test_index2",(req,res) => {
+    res.render('profile.ejs', {page : "settings"});
+});
+
+/*
 router.post("/",[
     check('firstName')
         .isLength({ min: 1 })
@@ -117,5 +123,5 @@ router.post("/login",[
     }
 
 });
-
+*/
 module.exports = router;

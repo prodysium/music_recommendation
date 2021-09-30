@@ -6,6 +6,20 @@
 </head>
 <body>
 <%- include('barre_navigation.ejs') %>
+
+<%if( typeof(page) === "undefined" || page === "favories") {%>
+
+    <%- include('favories_profile.ejs')%>
+
+<%} else {%>
+
+    <%- include('settings_profile.ejs')%>
+
+<%}%>
+
+
+
+
 <div class="container">
     <div class="row">
         <div class="col-lg-offset-2 col-md-offset-1 col-md-10 col-lg-8">

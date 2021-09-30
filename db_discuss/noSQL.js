@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+/* const { MongoClient } = require('mongodb');
 const database = 'music_recommendation';
 
 module.exports = {connection, disconnection};
@@ -41,4 +41,4 @@ async function getUser(client, newListing){
 async function testUser(client,mail,pseudo,password) {
     const result = await client.db(database).collection('users').findOne({pseudo : pseudo, mail : mail});
     console.log(result);
-}
+}*/

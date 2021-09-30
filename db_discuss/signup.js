@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+/*const { MongoClient } = require('mongodb');
 let getUser = require('./getUser');
 let noSQL = require('./noSQL');
 const database = 'music_recommendation';
@@ -20,4 +20,4 @@ noSQL.disconnection(client).then();
 async function testUser(client,mail,pseudo,password) {
     const result = await client.db(database).collection('users').findOne({pseudo : pseudo, mail : mail});
     console.log(result);
-}
+}*/
