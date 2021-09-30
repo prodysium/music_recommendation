@@ -52,10 +52,6 @@ router.post('/signup',[
         res.render('signup.ejs', {mes_erreurs : erreurs});
     }});
 
-
-
-
-
 router.post("/",[
     check('firstName')
         .isLength({ min: 1 })
@@ -73,10 +69,6 @@ router.post("/",[
         console.log(errors);
         res.render('index2.ejs', {user: "erreur ! pas de saisie suffisante"});
     }});
-
-
-
-
 
 router.get ('/2', (req, res) => {
     res.render('index2.ejs');
@@ -125,7 +117,5 @@ router.post("/login",[
     }
 
 });
-
-
 
 module.exports = router;
