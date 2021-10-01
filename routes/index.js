@@ -31,12 +31,13 @@ router.post('/signup',[
     if (errors.isEmpty()) {
         console.log(errors.array());
         console.log(req.body);
-        noSQL.connection(req.body.mail, req.body.pseudo, req.body.password).then();
+        //noSQL.connection(req.body.mail, req.body.pseudo, req.body.password).then();
         //noSQL.addUser(client, req.body.mail, req.body.pseudo, req.body.password);
         //noSQL.disconnection(client);
 
         //res.render('index.ejs');
-        res.render('signup.ejs');
+        res.redirect("/favories");
+        //res.render('profile.ejs', {page : "favories"});
 
     } else {
         console.log(errors.array());
@@ -56,6 +57,21 @@ router.get("/favories",(req,res) => {
 router.get("/settings",(req,res) => {
     res.render('profile.ejs', {page : "settings"});
 });
+
+router.post("/settings", (req,res) => {
+    console.log(req.body);
+    if (req.body.pass_change) {
+        res.redirect("/change_pass");
+    } else {
+        res.redirect("/favories");
+    }
+})
+
+router.get("/change_pass", (req,res) => {
+    res.render('password_change_profile.ejs')
+
+})
+
 
 /*
 router.post("/",[
