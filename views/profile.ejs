@@ -1,7 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <title>AAFCJM | Accueil</title>
+
+    <%if( typeof(page) === "undefined" || page === "favories") {%>
+
+        <title>AAFCJM | Profil - Favoris</title>
+
+    <%} else {%>
+
+            <title>AAFCJM | Profil - Paramètres</title>
+
+    <%}%>
+
     <%- include("balise_head.ejs") %>
 </head>
 <body>

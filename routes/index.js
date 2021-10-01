@@ -49,11 +49,11 @@ router.post('/signup',[
         res.render('signup.ejs', {mes_erreurs : erreurs});
     }});
 
-router.get("/test_index1",(req,res) => {
+router.get("/favories",(req,res) => {
     res.render('profile.ejs', {page : "favories"});
 });
 
-router.get("/test_index2",(req,res) => {
+router.get("/settings",(req,res) => {
     res.render('profile.ejs', {page : "settings"});
 });
 
