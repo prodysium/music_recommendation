@@ -3,7 +3,7 @@ const database = 'music_recommendation';
 
 module.exports.request = request;
 
-async function request(action = "",pseudo= "",mail= "",password= "") {
+async function request(action = "",pseudo= "",mail= "",password= "",user_id = "",extra_data = "") {
 
 
     const uri = "mongodb://localhost:27017";
@@ -29,11 +29,18 @@ async function request(action = "",pseudo= "",mail= "",password= "") {
                 break;
             case "pass_change" :
                 console.log("une action de changement de mot de passe est sollicitée");
-
+                retour = await changePassword(client,user_id,extra_data);
+                break;
+            case "pseudo_change" :
+                console.log("une action de changement de pseudo est sollicitée");
+                retour = await changePseudo(client,user_id,extra_data);
+                break;
+            case "mail_change" :
+                console.log("une action de changement de mail est sollicitée");
+                retour = await changeMail(client,user_id,extra_data);
                 break;
             default :
                 console.log("aucune action sollicitée");
-                 retour = await testUser(client,"",pseudo);
         }
 
     } finally {
@@ -105,4 +112,16 @@ async function createUser(client,pseudo,mail,password) {
         return [0,result._id.toString()];
     }
     return [1];
+}
+
+async function changePassword(client,user_id,new_pass) {
+    return 0;
+}
+
+async function changePseudo(client,user_id,new_pseudo) {
+    return 0;
+}
+
+async function changeMail(client,user_id,new_mail) {
+    return 0;
 }

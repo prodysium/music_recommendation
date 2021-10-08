@@ -1,7 +1,8 @@
 const express = require ('express');
 const {check, validationResult, Result} = require('express-validator');
 const router = express.Router ();
-const request = require('../db_discuss/noSQL');
+const request_user = require('../db_discuss/noSQL_users');
+const request_data = require('../db_discuss/noSQL_user_data');
 
 
 //sur le path /login -> ouverture de la page de connexion
@@ -20,7 +21,7 @@ router.post("/login", [
     let result = [1];
     if (errors.isEmpty()) {
 
-        request.request("login",req.body.pseudo,"",req.body.password).then((value) => {
+        request_user.request("login",req.body.pseudo,"",req.body.password).then((value) => {
             result = value;
             console.log(result);
         if (result[0] === 0) {
@@ -67,7 +68,7 @@ router.post('/signup',[
         console.log(errors.array());
         console.log(req.body);
 
-        request.request("signup",req.body.pseudo,req.body.mail,req.body.password).then((retour) => {
+        request_user.request("signup",req.body.pseudo,req.body.mail,req.body.password).then((retour) => {
             if (!retour[0]) {
                 res.cookie("utilisateur",retour[1],{maxAge:3600 * 1000});
                 res.render('profile.ejs', {page : "favories"});
