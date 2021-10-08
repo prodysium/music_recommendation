@@ -86,7 +86,6 @@ router.post('/signup',[
         res.render('signup.ejs', {mes_erreurs : erreurs});
     }});
 
-
 router.get("/favories",(req,res) => {
     let reqCookies = req.headers.cookie.split(";");
     let cookieUser = "";
@@ -95,16 +94,11 @@ router.get("/favories",(req,res) => {
 
             let results = reqCookies[i].split("=");
             cookieUser = results[1];
-            console.log(cookieUser);
         }
     }
     res.cookie("utilisateur",cookieUser,{maxAge:3600 * 1000});
     res.render('profile.ejs', {page : "favories"});
 });
-
-
-
-
 
 router.get("/settings",(req,res) => {
     res.render('profile.ejs', {page : "settings"});
@@ -115,6 +109,12 @@ router.post("/settings", (req,res) => {
     if (req.body.pass_change) {
         res.redirect("/change_pass");
     } else {
+        if (req.body.pseudo !== "") {
+
+        }
+        if (req.body.mail !== "") {
+
+        }
         res.redirect("/favories");
     }
 })
