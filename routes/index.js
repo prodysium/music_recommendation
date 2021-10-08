@@ -6,6 +6,7 @@ const request = require('../db_discuss/noSQL');
 
 //sur le path /login -> ouverture de la page de connexion
 router.get ('/login', (req, res) => {
+    res.clearCookie("utilisateur");
     res.render('login.ejs');
 });
 
@@ -15,7 +16,6 @@ router.post("/login", [
     check('password').isLength({ min: 8 }).withMessage('password invalid'),
 ],(req,res) => {
     res.clearCookie("utilisateur");
-    res.clearCookie("utilisatur");
     const errors = validationResult(req);
     let result = [1];
     if (errors.isEmpty()) {
@@ -25,7 +25,7 @@ router.post("/login", [
             console.log(result);
         if (result[0] === 0) {
             res.cookie("utilisateur",result[1],{maxAge:3600 * 1000});
-            res.render('profile.ejs', {page : "favories", utilisateur : result[1] });
+            res.redirect("/favories");
         } else {
             res.render("login.ejs", {mes_erreurs: "pseudo-password unknown"});
         }
@@ -46,6 +46,7 @@ router.post("/login", [
 
 //sur le path /signup -> ouverture de la page d'inscription
 router.get('/signup', (req, res) => {
+    res.clearCookie("utilisateur");
     res.render('signup.ejs');
 });
 
@@ -59,6 +60,7 @@ router.post('/signup',[
     check('password').isLength({ min: 8 }).withMessage('password invalid'),
 
 ],(req,res) => {
+    res.clearCookie("utilisateur");
     const errors = validationResult(req);
     let retour = [0];
     if (errors.isEmpty()) {
@@ -67,12 +69,11 @@ router.post('/signup',[
 
         request.request("signup",req.body.pseudo,req.body.mail,req.body.password).then((retour) => {
             if (!retour[0]) {
-                res.render('profile.ejs', {page : "favories", utilisateur : retour[1]});
+                res.cookie("utilisateur",retour[1],{maxAge:3600 * 1000});
+                res.render('profile.ejs', {page : "favories"});
             } else {
                 res.render("signup.ejs", {mes_erreurs : "pseudo-mail already used"});
             }});
-
-
     } else {
         console.log(errors.array());
         let erreurs = [];
@@ -84,9 +85,25 @@ router.post('/signup',[
         res.render('signup.ejs', {mes_erreurs : erreurs});
     }});
 
+
 router.get("/favories",(req,res) => {
+    let reqCookies = req.headers.cookie.split(";");
+    let cookieUser = "";
+    for (i = 0; i < reqCookies.length; i++ ) {
+        if (reqCookies[i].startsWith("utilisateur")){
+
+            let results = reqCookies[i].split("=");
+            cookieUser = results[1];
+            console.log(cookieUser);
+        }
+    }
+    res.cookie("utilisateur",cookieUser,{maxAge:3600 * 1000});
     res.render('profile.ejs', {page : "favories"});
 });
+
+
+
+
 
 router.get("/settings",(req,res) => {
     res.render('profile.ejs', {page : "settings"});

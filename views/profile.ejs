@@ -2,20 +2,19 @@
 <html lang="fr">
 <head>
 
-
-    <script>
-            let lesCookies = document.cookie.split(';');
-
-            for (const cook in lesCookies) {
-                    if (cook.startsWith("utilisateur=")) {
-
+        <script>
+                let lesCookies = document.cookie.split(';');
+                let user_exist = false;
+                for (i=0;i<lesCookies.length;i++) {
+                    if (lesCookies[i].startsWith("utilisateur=")) {
+                        user_exist = true;
+                        break;
                     }
-            }
-
-
-            window.location.replace("/login");
+                }
+                if (!user_exist) {
+                    window.location.replace("/login");
+                }
         </script>
-
 
 
     <%if( typeof(page) === "undefined" || page === "favories") {%>
