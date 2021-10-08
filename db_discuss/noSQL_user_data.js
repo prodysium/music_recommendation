@@ -21,7 +21,15 @@ async function request(action = "",user_id = "",extra_data = "") {
         switch (action) {
             case "get_data" :
                 console.log("une action de récupération des données d'un user est sollicitée");
-                retour = await getUserData(client,user_id,extra_data);
+                retour = await getUserData(client,user_id);
+                break;
+            case "add_data" :
+                console.log("une action d'ajout de données d'un user est sollicitée");
+                retour = await addUserData(client,user_id,extra_data);
+                break;
+            case "rem_data" :
+                console.log("une action de suppression de données d'un user est sollicitée");
+                retour = await remUserData(client,user_id,extra_data);
                 break;
 
             default :
