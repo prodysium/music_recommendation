@@ -58,9 +58,11 @@ async function getRandomUser(client){
 async function testLogin(client,pseudo,password) {
     let result = await client.db(database).collection('users').findOne({pseudo : pseudo});
     if (typeof (result) !== "undefined" && result.password === password) {
-        return 0;
+
+        return [0,result._id.toString()];
+
     }
-    return 1;
+    return [1];
 }
 
 async function testUser(client,mail = "",pseudo = "") {
@@ -82,11 +84,11 @@ async function testUser(client,mail = "",pseudo = "") {
         });
 
         if (i > 1) {
-            return 1;
+            return [1];
         }
-        return 0;
+        return [0,result._id.toString()];
     }
-    return 1;
+    return [1];
     //console.log(result);
 }
 
@@ -94,14 +96,13 @@ async function createUser(client,pseudo,mail,password) {
     let resultPseudo = await client.db(database).collection('users').findOne({pseudo : pseudo});
     let resultMail = await client.db(database).collection('users').findOne({pseudo : pseudo});
 
-
     if (resultPseudo === null && resultMail === null) {
         const result = await client.db(database).collection('users').insertOne({
             pseudo: pseudo,
             email: mail,
             password: password
         })
-        return 0;
+        return [0,result._id.toString()];
     }
-    return 1;
+    return [1];
 }

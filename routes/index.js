@@ -14,16 +14,18 @@ router.post("/login", [
 
     check('password').isLength({ min: 8 }).withMessage('password invalid'),
 ],(req,res) => {
+    res.clearCookie("utilisateur");
+    res.clearCookie("utilisatur");
     const errors = validationResult(req);
-    let result = 1;
+    let result = [1];
     if (errors.isEmpty()) {
-
-        console.log(req.body);
 
         request.request("login",req.body.pseudo,"",req.body.password).then((value) => {
             result = value;
-        if (result === 0) {
-            res.render('profile.ejs', {page : "favories"});
+            console.log(result);
+        if (result[0] === 0) {
+            res.cookie("utilisateur",result[1],{maxAge:3600 * 1000});
+            res.render('profile.ejs', {page : "favories", utilisateur : result[1] });
         } else {
             res.render("login.ejs", {mes_erreurs: "pseudo-password unknown"});
         }
@@ -58,17 +60,18 @@ router.post('/signup',[
 
 ],(req,res) => {
     const errors = validationResult(req);
-    let retour = 0;
+    let retour = [0];
     if (errors.isEmpty()) {
         console.log(errors.array());
         console.log(req.body);
 
-        retour = request.request("signup",req.body.pseudo,req.body.mail,req.body.password).then();
-        if (!retour) {
-            res.render('profile.ejs', {page : "favories"});
-        } else {
-            res.render("signup.ejs", {mes_erreurs : "pseudo-mail already used"});
-        }
+        request.request("signup",req.body.pseudo,req.body.mail,req.body.password).then((retour) => {
+            if (!retour[0]) {
+                res.render('profile.ejs', {page : "favories", utilisateur : retour[1]});
+            } else {
+                res.render("signup.ejs", {mes_erreurs : "pseudo-mail already used"});
+            }});
+
 
     } else {
         console.log(errors.array());

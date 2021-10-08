@@ -2,6 +2,22 @@
 <html lang="fr">
 <head>
 
+
+    <script>
+            let lesCookies = document.cookie.split(';');
+
+            for (const cook in lesCookies) {
+                    if (cook.startsWith("utilisateur=")) {
+
+                    }
+            }
+
+
+            window.location.replace("/login");
+        </script>
+
+
+
     <%if( typeof(page) === "undefined" || page === "favories") {%>
 
         <title>AAFCJM | Profil - Favoris</title>
