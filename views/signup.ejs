@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="fr">
+
 <head>
     <title>AAFCJM | Inscription</title>
     <!-- Custom styles for this template -->
@@ -22,7 +23,26 @@
                 font-size: 3.5rem;
             }
         }
+
     </style>
+
+
+    <%if( typeof(mes_erreurs) !=="undefined") {%>
+
+        <style>
+            .mail_error, .pseudo_error, .password_error {
+                border-color: rgb(255,50,50);
+            }
+
+        </style>
+
+        <script>
+            let mess_err = '<%= mes_erreurs%>' ;
+            for (const messErrKey in mess_err) {
+                console.log(messErrKey);
+            }
+        </script>
+    <%}%>
 
 </head>
 <body class="text-center">
@@ -34,36 +54,25 @@
     <form method="post" action="/signup">
         <h1 class="h3 mb-3 fw-normal text-color-signin">Créer un compte</h1>
 
+        <%if( typeof(mes_erreurs) !=="undefined") {%>
+            <p style="color: red;">Erreur lors de la création de votre compte.</p>
+        <%}%>
         <div class="form-floating">
-            <input type="text" class="form-control" id="floatingInputMail" name="mail" placeholder="Email">
+            <input type="text" class="form-control mail_error" id="floatingInputMail" name="mail" placeholder="Email">
             <label for="floatingInputMail">Email</label>
         </div>
         <div class="form-floating">
-            <input type="text" class="form-control" id="floatingInput" name="pseudo" placeholder="pseudo">
+            <input type="text" class="form-control pseudo_error" id="floatingInput" name="pseudo" placeholder="pseudo">
             <label for="floatingInput">Pseudo</label>
         </div>
         <div class="form-floating">
-            <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="mot de passe">
+            <input type="password" class="form-control password_error" id="floatingPassword" name="password" placeholder="mot de passe">
             <label for="floatingPassword">Mot De Passe</label>
         </div>
 
         <button class="w-100 btn btn-lg btn-primary" type="submit">Creer mon compte</button>
     </form>
 </main>
-
-<%if( typeof(mes_erreurs) ==="undefined") {%>
-    <script>
-        console.log("pas d'erreur")</script>
-
-<%} else {%>
-
-    <script>
-        let mess_err = '<%= mes_erreurs%>' ;
-        for (const messErrKey in mess_err) {
-            console.log(messErrKey);
-        }
-    </script>
-<%}%>
 
 </body>
 </html>

@@ -87,17 +87,22 @@ router.post('/signup',[
     }});
 
 router.get("/favories",(req,res) => {
+    if (typeof (req.headers.cookie) !== "undefined") {
+
     let reqCookies = req.headers.cookie.split(";");
     let cookieUser = "";
-    for (i = 0; i < reqCookies.length; i++ ) {
-        if (reqCookies[i].startsWith("utilisateur")){
+    for (let i = 0; i < reqCookies.length; i++) {
+        if (reqCookies[i].startsWith("utilisateur")) {
 
             let results = reqCookies[i].split("=");
             cookieUser = results[1];
         }
     }
-    res.cookie("utilisateur",cookieUser,{maxAge:3600 * 1000});
-    res.render('profile.ejs', {page : "favories"});
+    res.cookie("utilisateur", cookieUser, {maxAge: 3600 * 1000});
+    res.render('profile.ejs', {page: "favories"});
+} else {
+        res.redirect("/login");
+    }
 });
 
 router.get("/settings",(req,res) => {
@@ -105,18 +110,43 @@ router.get("/settings",(req,res) => {
 });
 
 router.post("/settings", (req,res) => {
+    if (typeof (req.headers.cookie) === "undefined") {
+        res.redirect("/login");
+    }
+
+    let reqCookies = req.headers.cookie.split(";");
+    let cookieUser = "";
+    for (let i = 0; i < reqCookies.length; i++) {
+        if (reqCookies[i].startsWith("utilisateur")) {
+
+            let results = reqCookies[i].split("=");
+            cookieUser = results[1];
+        }
+    }
+    res.cookie("utilisateur", cookieUser, {maxAge: 3600 * 1000});
+
     console.log(req.body);
     if (req.body.pass_change) {
         res.redirect("/change_pass");
-    } else {
-        if (req.body.pseudo !== "") {
+    } else if (req.body.pseudo_change) {
+            if (req.body.pseudo.length < 3) {
+                res.render("profile.ejs", {page : "settings",mes_erreurs : "pseudo invalid"});
+            } else {
+             /*request_user.request("pseudo_change","","","",cookieUser,req.body.pseudo).then((value) => {
+                 if(!value) {
 
-        }
-        if (req.body.mail !== "") {
+                 }
+             })*/
+            }
+        } else if (req.body.mail_change) {
+            if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(req.body.mail))) {
+                res.render("profile.ejs", {page : "settings",mes_erreurs : "mail invalid"});
+            } else {
 
+            }
         }
-        res.redirect("/favories");
-    }
+        //res.redirect("/favories");
+
 })
 
 router.get("/change_pass", (req,res) => {

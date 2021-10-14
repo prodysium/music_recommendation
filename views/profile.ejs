@@ -3,6 +3,7 @@
 <head>
 
         <script>
+                if (typeof(document.cookie) !== "undefined") {
                 let lesCookies = document.cookie.split(';');
                 let user_exist = false;
                 for (i=0;i<lesCookies.length;i++) {
@@ -13,9 +14,11 @@
                 }
                 if (!user_exist) {
                     window.location.replace("/login");
+                }}
+                else {
+                    window.location.replace("/login");
                 }
         </script>
-
 
     <%if( typeof(page) === "undefined" || page === "favories") {%>
 

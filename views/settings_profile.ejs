@@ -1,4 +1,21 @@
 
+<%var pi = false;
+var mi = false;%>
+
+<%if (typeof(mes_erreurs) !== "undefined") {%>
+
+
+    <%if (mes_erreurs === "pseudo invalid") {
+        pi = true;
+    }
+    if (mes_erreurs === "mail invalid") {
+        mi = true;
+    }%>
+
+
+
+<%}%>
+
 <div class="text-center">
 
     <div class="container">
@@ -12,30 +29,36 @@
                     <form class="needs-validation" action="/settings" method="post">
                         <div class="col-12">
                             <label for="username" class="form-label">Pseudo</label>
+                            <p style="text-align: left">Pseudo actuel : </p>
                             <div class="input-group has-validation">
                                 <span class="input-group-text">@</span>
                                 <input type="text" class="form-control" id="username" name="pseudo" placeholder="Username">
-                                <div class="invalid-feedback">
+                                <div class="invalid-feedback" <%if ( pi === true){%> style="display: block" <%}%>>
                                     Un pseudo valide doit être saisi.
                                 </div>
                             </div>
                         </div>
-
-                        <div class="col-12">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="mail" placeholder="you@example.com">
-                            <div class="invalid-feedback">
-                                Merci d'entrer un mail valide.
-                            </div>
-                        </div>
-
+                        <input name="pseudo_change" value="true" hidden>
+                        <button class="w-30 btn btn-primary btn-lg" style="margin-top: 5px" type="submit">Changer le pseudo</button>
+                    </form>
                         <hr class="my-4">
 
-                        <button class="w-30 btn btn-primary btn-lg" type="submit">Enregistrer</button>
+                        <form class="needs-validation" action="/settings" method="post">
+                            <div class="col-12">
+                                <label for="email" class="form-label">Email</label>
+                                <p style="text-align: left">Mail actuel : </p>
+                                <input type="email" class="form-control" id="email" name="mail" placeholder="you@example.com">
+                                <div class="invalid-feedback" <%if ( mi === true){%> style="display: block" <%}%>>
+                                    Merci d'entrer un mail valide.
+                                </div>
+                            </div>
+                            <input name="mail_change" value="true" hidden>
+                            <button class="w-30 btn btn-primary btn-lg" style="margin-top: 5px" type="submit">Changer l'adresse mail</button>
+
                     </form>
                     <hr class="my-4">
-                    <form method="post" action="/settings">
-                        <input name="pass_change" id="pass_change" value="true" hidden>
+                    <form class="needs-validation" method="post" action="/settings">
+                        <input name="pass_change" class="form-control" id="pass_change" value="true">
                         <button class="w-30 btn btn-primary btn-lg" type="submit">Changer le mot de passe</button>
                     </form>
                 </div>
@@ -44,3 +67,4 @@
     </div>
 
 </div>
+
