@@ -11,6 +11,15 @@ router.get ('/login', (req, res) => {
     res.render('login.ejs');
 });
 
+//sur le path /signup -> ouverture de la page d'inscription
+router.get('/signup', (req, res) => {
+    res.clearCookie("utilisateur");
+    res.render('signup.ejs');
+});
+
+
+
+//retour de la page login quand l'utilisateur essaye de se connecter
 router.post("/login", [
     check('pseudo').isLength({ min: 3 }).withMessage('pseudo invalid'),
 
@@ -44,14 +53,7 @@ router.post("/login", [
     res.render('login.ejs', {mes_erreurs: erreurs});
 }});
 
-
-//sur le path /signup -> ouverture de la page d'inscription
-router.get('/signup', (req, res) => {
-    res.clearCookie("utilisateur");
-    res.render('signup.ejs');
-});
-
-//retour de la page signup
+//retour de la page signup quand un utilisateur essaye de creer un compte
 router.post('/signup',[
     check('mail').isLength({ min: 1 }).withMessage('mail invalid'),
     check('mail').isEmail().withMessage('mail not well formed'),
@@ -86,39 +88,26 @@ router.post('/signup',[
         res.render('signup.ejs', {mes_erreurs : erreurs});
     }});
 
+
+//quand un utilisateur va sur la page des favoris, la page par défaut quand on se connecte
 router.get("/favories",(req,res) => {
-    if (typeof (req.headers.cookie) !== "undefined") {
-
-    let reqCookies = req.headers.cookie.split(";");
-    let cookieUser = "";
-    for (let i = 0; i < reqCookies.length; i++) {
-        if (reqCookies[i].startsWith("utilisateur")) {
-
-            let results = reqCookies[i].split("=");
-            cookieUser = results[1];
-        }
-    }
-    res.cookie("utilisateur", cookieUser, {maxAge: 3600 * 1000});
     res.render('profile.ejs', {page: "favories"});
-} else {
-        res.redirect("/login");
-    }
 });
 
+//affiche la page settings
 router.get("/settings",(req,res) => {
     res.render('profile.ejs', {page : "settings"});
 });
 
+//retour de la page settings, on change les paramètres qui sont changés
 router.post("/settings", (req,res) => {
     if (typeof (req.headers.cookie) === "undefined") {
         res.redirect("/login");
     }
-
     let reqCookies = req.headers.cookie.split(";");
     let cookieUser = "";
     for (let i = 0; i < reqCookies.length; i++) {
         if (reqCookies[i].startsWith("utilisateur")) {
-
             let results = reqCookies[i].split("=");
             cookieUser = results[1];
         }
@@ -132,17 +121,25 @@ router.post("/settings", (req,res) => {
             if (req.body.pseudo.length < 3) {
                 res.render("profile.ejs", {page : "settings",mes_erreurs : "pseudo invalid"});
             } else {
-             /*request_user.request("pseudo_change","","","",cookieUser,req.body.pseudo).then((value) => {
-                 if(!value) {
-
-                 }
-             })*/
+                request_user.request("pseudo_change","","","",cookieUser,req.body.pseudo).then((value) =>{
+                    if(!value) {
+                        console.log("ici");
+                        res.render("profile.ejs", {page : "settings"});
+                    }
+                 res.render("profile.ejs", {page : "settings",mes_erreurs : "db exec problem"});
+             });
             }
         } else if (req.body.mail_change) {
             if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(req.body.mail))) {
                 res.render("profile.ejs", {page : "settings",mes_erreurs : "mail invalid"});
             } else {
-
+                request_user.request("mail_change","","","",cookieUser,req.body.mail).then((value) => {
+                    if(!value) {
+                        res.render("profile.ejs", {page : "settings"});
+                    }
+                    console.log("la");
+                    res.render("profile.ejs", {page : "settings", mes_erreurs : "db exec problem"});
+                });
             }
         }
         //res.redirect("/favories");
@@ -222,4 +219,6 @@ router.post("/login",[
 
 });
 */
+
+
 module.exports = router;

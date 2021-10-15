@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectID} = require('mongodb');
 const {use} = require("express/lib/router");
 const database = 'music_recommendation';
 
@@ -116,39 +116,39 @@ async function createUser(client,pseudo,mail,password) {
 }
 
 async function changePassword(client,user_id,new_pass) {
-    let resultUser = await client.db(database).collection("users").findOne({_id : user_id});
+
+    let resultUser = await client.db(database).collection("users").findOne({_id : {$eq: ObjectID(user_id)}});
 
     if (resultUser) {
-        const result = await client.db(database).collection("users").update({_id: user_id}, {$set: {password : new_pass}});
+        const result = await client.db(database).collection("users").updateOne({_id: {$eq: ObjectID(user_id)}}, {$set: {password : new_pass}});
     }
-    let resultPass = await client.db(database).collection('users').findOne({_id: user_id, password: new_pass});
-    if (resultPass._id.toString() === user_id) {
+    let resultPass = await client.db(database).collection('users').findOne({_id: {$eq: ObjectID(user_id)}, password: new_pass});
+    if (typeof (resultPass) !== "undefined" && resultPass._id.toString() === user_id) {
         return 0;
     }
     return 1;
 }
 
 async function changePseudo(client,user_id,new_pseudo) {
-    let resultUser = await client.db(database).collection("users").findOne({_id : user_id});
-
+    let resultUser = await client.db(database).collection("users").findOne({_id : {$eq: ObjectID(user_id)}});
     if (resultUser) {
-        const result = await client.db(database).collection("users").update({_id: user_id}, {$set: {pseudo : new_pseudo}});
+        const result = await client.db(database).collection("users").updateOne({_id: {$eq: ObjectID(user_id)}}, {$set: {pseudo : new_pseudo}});
     }
-    let resultPass = await client.db(database).collection('users').findOne({_id: user_id, pseudo: new_pseudo});
-    if (resultPass._id.toString() === user_id) {
+    let resultPass = await client.db(database).collection('users').findOne({_id: {$eq: ObjectID(user_id)}, pseudo: new_pseudo});
+    if (typeof (resultPass) !== "undefined" && resultPass._id.toString() === user_id) {
         return 0;
     }
     return 1;
 }
 
 async function changeMail(client,user_id,new_mail) {
-    let resultUser = await client.db(database).collection("users").findOne({_id : user_id});
+    let resultUser = await client.db(database).collection("users").findOne({_id : {$eq: ObjectID(user_id)}});
 
     if (resultUser) {
-        const result = await client.db(database).collection("users").update({_id: user_id}, {$set: {mail : new_mail}});
+        const result = await client.db(database).collection("users").updateOne({_id: {$eq: ObjectID(user_id)}}, {$set: {email : new_mail}});
     }
-    let resultPass = await client.db(database).collection('users').findOne({_id: user_id, mail: new_mail});
-    if (resultPass._id.toString() === user_id) {
+    let resultPass = await client.db(database).collection('users').findOne({_id: {$eq: ObjectID(user_id)}, email: new_mail});
+    if (typeof (resultPass) !== "undefined" && resultPass._id.toString() === user_id) {
         return 0;
     }
     return 1;

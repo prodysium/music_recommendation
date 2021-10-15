@@ -1,6 +1,7 @@
 
 <%var pi = false;
-var mi = false;%>
+var mi = false;
+var errBD = false;%>
 
 <%if (typeof(mes_erreurs) !== "undefined") {%>
 
@@ -10,6 +11,9 @@ var mi = false;%>
     }
     if (mes_erreurs === "mail invalid") {
         mi = true;
+    }
+    if (mes_erreurs === "db exec problem") {
+        errBD = true;
     }%>
 
 
@@ -22,6 +26,10 @@ var mi = false;%>
         <main>
             <div class="py-5 text-center">
                 <h2>Paramètres du profil</h2>
+            </div>
+
+            <div class="invalid-feedback" <%if ( errBD === true){%> style="display: block" <%}%>>
+                L'opération n'a pas pu être éxécutée. Merci de réhitérer l'opération.
             </div>
 
             <div class="row g-5">
