@@ -112,10 +112,18 @@ router.post("/settings", (req,res) => {
             cookieUser = results[1];
         }
     }
-    res.cookie("utilisateur", cookieUser, {maxAge: 3600 * 1000});
+
 
     console.log(req.body);
-    if (req.body.pass_change) {
+    if (req.body.infos_change) {
+        request_user.request("infos_change", "","","",cookieUser,[req.body.age,req.body.sexe,req.body.departement,req.body.pays]).then((value) => {
+            if(!value) {
+                res.render("profile.ejs", {page : "settings"});
+            }
+            res.render("profile.ejs", {page : "settings",mes_erreurs : "db exec problem"});
+        });
+
+    } else if (req.body.pass_change) {
         res.redirect("/change_pass");
     } else if (req.body.pseudo_change) {
             if (req.body.pseudo.length < 3) {
@@ -123,7 +131,6 @@ router.post("/settings", (req,res) => {
             } else {
                 request_user.request("pseudo_change","","","",cookieUser,req.body.pseudo).then((value) =>{
                     if(!value) {
-                        console.log("ici");
                         res.render("profile.ejs", {page : "settings"});
                     }
                  res.render("profile.ejs", {page : "settings",mes_erreurs : "db exec problem"});

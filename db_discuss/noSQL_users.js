@@ -40,6 +40,10 @@ async function request(action = "",pseudo= "",mail= "",password= "",user_id = ""
                 console.log("une action de changement de mail est sollicitée");
                 retour = await changeMail(client,user_id,extra_data);
                 break;
+            case "infos_change" :
+                console.log("une action de changement d'informations personnelles est sollicitée");
+                retour = await changeInfos(client,user_id,extra_data);
+                break;
             default :
                 console.log("aucune action sollicitée");
         }
@@ -148,6 +152,36 @@ async function changeMail(client,user_id,new_mail) {
         const result = await client.db(database).collection("users").updateOne({_id: {$eq: ObjectID(user_id)}}, {$set: {email : new_mail}});
     }
     let resultPass = await client.db(database).collection('users').findOne({_id: {$eq: ObjectID(user_id)}, email: new_mail});
+    if (typeof (resultPass) !== "undefined" && resultPass._id.toString() === user_id) {
+        return 0;
+    }
+    return 1;
+}
+
+async function changeInfos(client,user_id,infos_array) {
+    let age = infos_array[0];
+    let sexe = infos_array[1];
+    let dept = infos_array[2];
+    let pays = infos_array[3];
+
+    let resultUser = await client.db(database).collection("users").findOne({_id : {$eq: ObjectID(user_id)}});
+    if (age === "") {
+        age = resultUser.age;
+    }
+    if (sexe === "") {
+        sexe = resultUser.sexe;
+    }
+    if (dept === "") {
+        dept = resultUser.dept;
+    }
+    if (pays === "") {
+        pays = resultUser.pays;
+    }
+
+    if (resultUser) {
+        const result = await client.db(database).collection("users").updateOne({_id: {$eq: ObjectID(user_id)}}, {$set: {age : age, pays : pays, sexe : sexe, dept : dept}});
+    }
+    let resultPass = await client.db(database).collection('users').findOne({_id: {$eq: ObjectID(user_id)}, age : age, pays : pays, sexe : sexe, dept : dept});
     if (typeof (resultPass) !== "undefined" && resultPass._id.toString() === user_id) {
         return 0;
     }
