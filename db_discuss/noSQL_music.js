@@ -1,9 +1,9 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectID} = require('mongodb');
 const database = 'music_recommendation';
 
 module.exports.request = request;
 
-async function request(action = "",user_id = "",extra_data = "") {
+async function request(action = "",artiste = "", titre = "") {
 
 
     const uri = "mongodb://localhost:27017";
@@ -19,19 +19,10 @@ async function request(action = "",user_id = "",extra_data = "") {
         console.log('tu est connecté');
 
         switch (action) {
-            case "get_data" :
-                console.log("une action de récupération des données d'un user est sollicitée");
-                retour = await getUserData(client,user_id);
+            case "search_music":
+                console.log("une action de recherche de musique est sollicitée");
+                retour = await getMusicFromSearch(client, artiste, titre);
                 break;
-            case "add_data" :
-                console.log("une action d'ajout de données d'un user est sollicitée");
-                retour = await addUserData(client,user_id,extra_data);
-                break;
-            case "rem_data" :
-                console.log("une action de suppression de données d'un user est sollicitée");
-                retour = await remUserData(client,user_id,extra_data);
-                break;
-
             default :
                 console.log("aucune action sollicitée");
         }
@@ -49,4 +40,12 @@ async function disconnection(client) {
 }
 
 // Add functions that make DB calls here
-
+async function getMusicFromSearch(client,artiste, titre) {
+    if (titre !== "" || artiste !== "") {
+        return await client.db(database).collection("music_data").find({
+            song_name: {$regex: '.*' + titre + '.*', $options : "/i"},
+            artiste_name: {$regex: '.*' + artiste + '.*', $options : "/i"}
+        }).toArray();
+    }
+    return [];
+}

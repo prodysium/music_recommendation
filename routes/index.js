@@ -3,6 +3,7 @@ const {check, validationResult, Result} = require('express-validator');
 const router = express.Router ();
 const request_user = require('../db_discuss/noSQL_users');
 const request_data = require('../db_discuss/noSQL_user_data');
+const request_music = require('../db_discuss/noSQL_music');
 
 
 //sur le path /login -> ouverture de la page de connexion
@@ -102,6 +103,33 @@ router.get("/settings",(req,res) => {
 //affiche la page de recherche de musique
 router.get("/search",(req,res) => {
     res.render('profile.ejs', {page : "search"});
+});
+
+//retour de la page search
+router.post("/search",(req,res) => {
+    if (typeof (req.headers.cookie) === "undefined") {
+        res.redirect("/login");
+    }
+    let reqCookies = req.headers.cookie.split(";");
+    let cookieUser = "";
+    for (let i = 0; i < reqCookies.length; i++) {
+        if (reqCookies[i].startsWith("utilisateur")) {
+            let results = reqCookies[i].split("=");
+            cookieUser = results[1];
+        }
+    }
+
+    console.log(req.body);
+
+    request_music.request("search_music",req.body.artist_search, req.body.title_search).then((result) => {
+        console.log(result);
+        res.render('profile.ejs', {
+            page : "search",
+            titre : req.body.title_search,
+            artiste : req.body.artist_search,
+            result : result
+        });
+    });
 });
 
 //retour de la page settings, on change les paramètres qui sont changés
