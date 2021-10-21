@@ -99,6 +99,11 @@ router.get("/settings",(req,res) => {
     res.render('profile.ejs', {page : "settings"});
 });
 
+//affiche la page de recherche de musique
+router.get("/search",(req,res) => {
+    res.render('profile.ejs', {page : "search"});
+});
+
 //retour de la page settings, on change les paramètres qui sont changés
 router.post("/settings", (req,res) => {
     if (typeof (req.headers.cookie) === "undefined") {
@@ -113,8 +118,6 @@ router.post("/settings", (req,res) => {
         }
     }
 
-
-    console.log(req.body);
     if (req.body.infos_change) {
         request_user.request("infos_change", "","","",cookieUser,[req.body.age,req.body.sexe,req.body.departement,req.body.pays]).then((value) => {
             if(!value) {
@@ -149,8 +152,6 @@ router.post("/settings", (req,res) => {
                 });
             }
         }
-        //res.redirect("/favories");
-
 })
 
 router.get("/change_pass", (req,res) => {

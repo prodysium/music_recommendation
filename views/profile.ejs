@@ -24,9 +24,13 @@
 
         <title>AAFCJM | Profil - Favoris</title>
 
+    <%} else if (page === "settings"){%>
+
+        <title>AAFCJM | Profil - Paramètres</title>
+
     <%} else {%>
 
-            <title>AAFCJM | Profil - Paramètres</title>
+        <title>AAFCJM | Profil - Ajouter Musique</title>
 
     <%}%>
 
@@ -39,9 +43,13 @@
 
     <%- include('favories_profile.ejs')%>
 
-<%} else {%>
+<%} else if (page === "settings"){%>
 
     <%- include('settings_profile.ejs')%>
+
+<%} else {%>
+
+    <%- include('search_profile.ejs')%>
 
 <%}%>
 </body>
