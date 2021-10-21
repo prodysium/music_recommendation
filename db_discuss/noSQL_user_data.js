@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectID} = require('mongodb');
 const database = 'music_recommendation';
 
 module.exports.request = request;
@@ -51,10 +51,17 @@ async function disconnection(client) {
 // Add functions that make DB calls here
 
 async function getUserData(client,user_id) {
-    return 0;
+    const result = await client.db(database).collection("users_data").findOne({user: user_id});
+
+    if (typeof(result) !== "undefined"){
+        return result;
+    }
+
+    return 1;
 }
 
 async function addUserData(client,user_id,data) {
+    const resultUpdate = await client.db(database).collection("users_data").updateOne({user: user_id}, {$push: {favories: data}}, {upsert:true});
     return 0;
 }
 

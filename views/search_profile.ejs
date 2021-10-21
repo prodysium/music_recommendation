@@ -36,9 +36,17 @@
                         <form method="post" action="/search">
                             <input type="hidden" value=<%if(typeof(titre) !== "undefined"){%> "<%-titre%>"<%}%> name="title_search">
                             <input type="hidden" value=<%if(typeof(artiste) !== "undefined"){%> "<%-artiste%>"<%}%> name="artist_search">
-                            <input type="hidden" value="<%-result[i].id%>" name="title_add_fav">
+                            <input type="hidden" value="<%-result[i].id%>" name="id_fav">
 
-                            <input type="image" id="add_fav" style="width:55px; height:55px" alt="Ajouter aux Favoris" src="images/Logo-plus.png">
+                            <input type="hidden" name="action" <%if(typeof (user_datas) !== "undefined" && !user_datas[i]) {%> value="add" <%} else {%> value="del" <%}%>>
+
+                            <input type="image" id="action_fav" style="width:55px; height:55px"
+
+                            <%if(typeof (user_datas) !== "undefined" && !user_datas[i]) {%>
+                                 alt="Ajouter aux Favoris" src="images/Logo-plus.png">
+                            <%} else {%>
+                                 alt="Supprimer des Favoris" src="images/Logo-moins.png">
+                            <%}%>
                         </form>
 
                     </div>

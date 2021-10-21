@@ -121,13 +121,37 @@ router.post("/search",(req,res) => {
 
     console.log(req.body);
 
+    if(typeof(req.body.id_fav) !== undefined && req.body.action === "add") {
+        request_data.request("add_data",cookieUser,req.body.id_fav).then();
+    } else {
+        request_data.request("del_data",cookieUser,req.body.id_fav).then();
+    }
+    let user_datas = null;
+
+    request_data.request("get_data",cookieUser).then((value) => {
+        user_datas = value;
+        console.log(value);
+    })
+
     request_music.request("search_music",req.body.artist_search, req.body.title_search).then((result) => {
         console.log(result);
+        let datas = [];
+        for (let i = 0; i < result.length;i++) {
+            if (user_datas.favories.includes(result[i].id)){
+                datas[i] = true;
+            } else {
+                datas[i] = false;
+            }
+
+        }
+
+
         res.render('profile.ejs', {
             page : "search",
             titre : req.body.title_search,
             artiste : req.body.artist_search,
-            result : result
+            result : result,
+            user_datas : datas
         });
     });
 });
