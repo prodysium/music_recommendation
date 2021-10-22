@@ -33,7 +33,6 @@ router.post("/login", [
 
         request_user.request("login",req.body.pseudo,"",req.body.password).then((value) => {
             result = value;
-            console.log(result);
         if (result[0] === 0) {
             res.cookie("utilisateur",result[1],{maxAge:3600 * 1000});
             res.redirect("/favories");
@@ -44,7 +43,6 @@ router.post("/login", [
 
     } else
 {
-    console.log(errors.array());
     let erreurs = [];
     if (!errors.isEmpty()) {
         for (const i of errors.array()) {
@@ -68,8 +66,6 @@ router.post('/signup',[
     const errors = validationResult(req);
     let retour = [0];
     if (errors.isEmpty()) {
-        console.log(errors.array());
-        console.log(req.body);
 
         request_user.request("signup",req.body.pseudo,req.body.mail,req.body.password).then((retour) => {
             if (!retour[0]) {
@@ -79,7 +75,6 @@ router.post('/signup',[
                 res.render("signup.ejs", {mes_erreurs : "pseudo-mail already used"});
             }});
     } else {
-        console.log(errors.array());
         let erreurs = [];
         if (!errors.isEmpty()) {
             for (const i of errors.array()) {
@@ -168,8 +163,6 @@ router.post("/search",(req,res) => {
         }
     }
 
-    console.log(req.body);
-
     if(typeof(req.body.id_fav) !== undefined && req.body.action === "add") {
         request_data.request("add_data",cookieUser,req.body.id_fav).then();
     } else {
@@ -179,11 +172,10 @@ router.post("/search",(req,res) => {
 
     request_data.request("get_data",cookieUser).then((value) => {
         user_datas = value;
-        console.log(value);
     })
 
     request_music.request("search_music",req.body.artist_search, req.body.title_search).then((result) => {
-        console.log(result);
+
         let datas = [];
         if (user_datas !== null) {
             for (let i = 0; i < result.length; i++) {
@@ -248,7 +240,6 @@ router.post("/settings", (req,res) => {
                     if(!value) {
                         res.render("profile.ejs", {page : "settings"});
                     }
-                    console.log("la");
                     res.render("profile.ejs", {page : "settings", mes_erreurs : "db exec problem"});
                 });
             }
