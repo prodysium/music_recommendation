@@ -27,7 +27,7 @@ async function request(action = "",user_id = "",extra_data = "") {
                 console.log("une action d'ajout de données d'un user est sollicitée");
                 retour = await addUserData(client,user_id,extra_data);
                 break;
-            case "rem_data" :
+            case "del_data" :
                 console.log("une action de suppression de données d'un user est sollicitée");
                 retour = await remUserData(client,user_id,extra_data);
                 break;
@@ -66,5 +66,11 @@ async function addUserData(client,user_id,data) {
 }
 
 async function remUserData(client,user_id,data) {
+    console.log(data);
+    const resultUpdate = await client.db(database).collection("users_data").updateOne({user: user_id},
+        {$pull: {
+            favories: data
+        }});
+    console.log(resultUpdate);
     return 0;
 }

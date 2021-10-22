@@ -136,13 +136,14 @@ router.post("/search",(req,res) => {
     request_music.request("search_music",req.body.artist_search, req.body.title_search).then((result) => {
         console.log(result);
         let datas = [];
-        for (let i = 0; i < result.length;i++) {
-            if (user_datas.favories.includes(result[i].id)){
-                datas[i] = true;
-            } else {
-                datas[i] = false;
+        if (user_datas !== null) {
+            for (let i = 0; i < result.length; i++) {
+                if (user_datas.favories.includes(result[i].id)) {
+                    datas[i] = true;
+                } else {
+                    datas[i] = false;
+                }
             }
-
         }
 
 
