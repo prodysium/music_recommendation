@@ -91,8 +91,27 @@ router.post('/signup',[
 
 
 //quand un utilisateur va sur la page des favoris, la page par défaut quand on se connecte
-router.get("/favories",(req,res) => {
-    res.render('profile.ejs', {page: "favories"});
+router.get("/favories", (req, res) => {
+    if (typeof (req.headers.cookie) === "undefined") {
+        res.redirect("/login");
+    }
+    let header = req.headers;
+    let reqCookies = req.headers.cookie.split(";");
+    let cookieUser = "";
+    for (let i = 0; i < reqCookies.length; i++) {
+        if (reqCookies[i].startsWith("utilisateur")) {
+            let results = reqCookies[i].split("=");
+            cookieUser = results[1];
+        }
+    }
+    request_data.request("get_data", cookieUser).then((result) => {
+        request_music.request("get_musics", "", "", result.favories).then((values) => {
+            res.render('profile.ejs', {
+                page: "favories",
+                user_datas: values
+            });
+        });
+    });
 });
 
 //affiche la page settings
@@ -104,6 +123,36 @@ router.get("/settings",(req,res) => {
 router.get("/search",(req,res) => {
     res.render('profile.ejs', {page : "search"});
 });
+
+
+//retour de la page favories
+router.post("/favories",(req,res) => {
+    if (typeof (req.headers.cookie) === "undefined") {
+        res.redirect("/login");
+    }
+    let reqCookies = req.headers.cookie.split(";");
+    let cookieUser = "";
+    for (let i = 0; i < reqCookies.length; i++) {
+        if (reqCookies[i].startsWith("utilisateur")) {
+            let results = reqCookies[i].split("=");
+            cookieUser = results[1];
+        }
+    }
+
+    request_data.request("del_data",cookieUser,req.body.id_fav).then((val) => {
+        request_data.request("get_data", cookieUser).then((result) => {
+            request_music.request("get_musics", "", "", result.favories).then((values) => {
+                res.render('profile.ejs', {
+                    page: "favories",
+                    user_datas: values
+                });
+            });
+        });
+
+
+    });
+});
+
 
 //retour de la page search
 router.post("/search",(req,res) => {
@@ -145,7 +194,6 @@ router.post("/search",(req,res) => {
                 }
             }
         }
-
 
         res.render('profile.ejs', {
             page : "search",

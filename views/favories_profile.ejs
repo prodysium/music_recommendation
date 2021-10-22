@@ -5,7 +5,40 @@
 
     <p style="margin: 20px;">Liste des Favoris</p>
 
-    <iframe src="https://open.spotify.com/embed/track/5vpRNnhdKcH9vDnSJgipdh" width="100%" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+    <!--<iframe src="https://open.spotify.com/embed/track/5vpRNnhdKcH9vDnSJgipdh" width="100%" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>-->
+
+    <%if(typeof(user_datas) !== "undefined") {
+    if (user_datas !== []) {%>
+
+        <div class="list-group">
+            <%
+                var result = user_datas;
+            for (var i = 0; i< result.length;i ++) {%>
+
+            <div class="d-flex gap-2 w-100 justify-content-between list-group-item list-group-item-action d-flex gap-3 py-2" aria-current="true" >
+                <div>
+                    <p class="mb-0" style="text-align: left!important;"><%-result[i].song_name%></p>
+                    <p class="mb-0 opacity-75" style="text-align: left!important;"><%-result[i].artiste_name%></p>
+                    <div style="text-align: left!important;">
+                        <iframe src="https://open.spotify.com/embed/track/<%-result[i].id%>" style="text-align: left!important;" width="300px" height="80px" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+                    </div>
+
+                </div>
+
+                <form method="post" action="/favories">
+                    <input type="hidden" value="<%-result[i].id%>" name="id_fav">
+
+                    <input type="image" id="action_fav" style="width:55px; height:55px" alt="Supprimer des Favoris" src="images/Logo-moins.png">
+                </form>
+
+            </div>
+            <%}%>
+        </div>
+    <%} else {%>
+        <p>Aucun favoris encore ajouté.</p>
+    <%}%>
+    <%}%>
+
 
 <div class="list-group" style="display: none">
     <a class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">

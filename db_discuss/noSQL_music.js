@@ -3,7 +3,7 @@ const database = 'music_recommendation';
 
 module.exports.request = request;
 
-async function request(action = "",artiste = "", titre = "") {
+async function request(action = "",artiste = "", titre = "",ids = []) {
 
 
     const uri = "mongodb://localhost:27017";
@@ -23,6 +23,9 @@ async function request(action = "",artiste = "", titre = "") {
                 console.log("une action de recherche de musique est sollicitée");
                 retour = await getMusicFromSearch(client, artiste, titre);
                 break;
+            case "get_musics":
+                console.log("une action de récupération de musiques est sollicitée");
+                retour = await getMusics(client,ids);
             default :
                 console.log("aucune action sollicitée");
         }
@@ -48,4 +51,9 @@ async function getMusicFromSearch(client,artiste, titre) {
         }).toArray();
     }
     return [];
+}
+
+async function getMusics(client,ids) {
+    const result = await client.db(database).collection("music_data").find({id : {$in : ids}}).toArray();
+    return result;
 }
