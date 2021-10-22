@@ -18,6 +18,25 @@ router.get('/signup', (req, res) => {
     res.render('signup.ejs');
 });
 
+router.get("/testPY",(req,res) => {
+
+    const { exec } = require('child_process');
+    let fichierEtArgs = "test.py 1 4";
+    exec(fichierEtArgs, (err, stdout, stderr) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        if (stderr) {
+            console.error(`stderr: ${stderr}`);
+            return;
+        }
+        console.log(stdout);
+    });
+
+
+    res.redirect("/login");
+});
 
 
 //retour de la page login quand l'utilisateur essaye de se connecter
