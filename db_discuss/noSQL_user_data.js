@@ -60,13 +60,17 @@ async function getUserData(client,user_id) {
     return 1;
 }
 
-async function addUserData(client,user_id,data) {
-    const resultUpdate = await client.db(database).collection("users_data").updateOne({user: user_id}, {$push: {favories: data}}, {upsert:true});
+async function addUserData(client, user_id, data) {
+    const user_datas = await getUserData(client, user_id);
+
+    if (user_datas !== null && !(user_datas.favories.includes(data))) {
+
+        const resultUpdate = await client.db(database).collection("users_data").updateOne({user: user_id}, {$push: {favories: data}}, {upsert: true});
+    }
     return 0;
 }
 
 async function remUserData(client,user_id,data) {
-    console.log(data);
     const resultUpdate = await client.db(database).collection("users_data").updateOne({user: user_id},
         {$pull: {
             favories: data
