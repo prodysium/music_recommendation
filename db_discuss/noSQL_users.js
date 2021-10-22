@@ -69,7 +69,8 @@ async function getRandomUser(client){
 
 async function testLogin(client,pseudo,password) {
     let result = await client.db(database).collection('users').findOne({pseudo : pseudo});
-    if (typeof (result) !== "undefined" && result.password === password) {
+    console.log(result);
+    if (result !== null && result.password === password) {
 
         return [0,result._id.toString()];
 
@@ -91,8 +92,6 @@ async function testUser(client,mail = "",pseudo = "") {
         let i = 0;
         val.forEach((elem) => {
             i++;
-            console.log(elem.pseudo);
-            console.log(elem.email);
         });
 
         if (i > 1) {
@@ -114,7 +113,7 @@ async function createUser(client,pseudo,mail,password) {
             email: mail,
             password: password
         })
-        return [0,result._id.toString()];
+        return [0,result.insertedId.toString()];
     }
     return [1];
 }
