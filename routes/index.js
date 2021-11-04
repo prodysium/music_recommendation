@@ -21,7 +21,7 @@ router.get('/signup', (req, res) => {
 router.get("/testPY",(req,res) => {
 
     const { exec } = require('child_process');
-    let fichierEtArgs = "test.py 1 4";
+    let fichierEtArgs = "C:\\Users\\jonas\\AppData\\Local\\Programs\\Python\\Python38-32\\python.exe recommandationparvoisinetcontenue.py 'Si Vos Querés\\Yerba Brava'";
     exec(fichierEtArgs, (err, stdout, stderr) => {
         if (err) {
             console.error(err);
