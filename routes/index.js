@@ -21,15 +21,15 @@ router.get('/signup', (req, res) => {
 router.get("/testPY",(req,res) => {
 
     const { exec } = require('child_process');
-    let fichierEtArgs = "C:\\Users\\jonas\\AppData\\Local\\Programs\\Python\\Python38-32\\python.exe recommandationparvoisinetcontenue.py 'Si Vos Querés\\Yerba Brava'";
+    let fichierEtArgs = 'C:\\Users\\jonas\\AppData\\Local\\Programs\\Python\\Python38-32\\python.exe recommandationparvoisinetcontenue.py "Si Vos QuerésµYerba Brava"';
     exec(fichierEtArgs, (err, stdout, stderr) => {
         if (err) {
             console.error(err);
-            return;
+
         }
         if (stderr) {
             console.error(`stderr: ${stderr}`);
-            return;
+
         }
         console.log(stdout);
     });

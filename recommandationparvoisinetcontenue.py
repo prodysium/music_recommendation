@@ -27,7 +27,7 @@ similariter[similariter <= 0.5] = 0
 
 #Generate graph
 g = nx.from_numpy_matrix(similariter)
-g = nx.relabel_nodes(g,{i:musiques["song_name"][i]+'\\'+musiques["artiste_name"][i] for i in range(len(normalized_df))})
+g = nx.relabel_nodes(g,{i:musiques["song_name"][i]+'µ'+musiques["artiste_name"][i] for i in range(len(normalized_df))})
 
 #Triage des voisin pour prendre celui qui a le plu fort weight
 def getMusiqueSimilar(musiqueTitle):
@@ -97,7 +97,7 @@ musiquesIdSongName = musiques.set_index("song_name")
 def getMusiqueData(listAllMusiqueName):
     allDataMusique = []
     for i in listAllMusiqueName.index:
-        musiqueInfoReachTab = i.split("\\")
+        musiqueInfoReachTab = i.split("µ")
         data = musiquesIdSongName.loc[musiqueInfoReachTab[0]]
         if (len(data.shape) > 1):
             for j in range(data.shape[0]):
