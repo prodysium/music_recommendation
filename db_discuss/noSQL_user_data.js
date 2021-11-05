@@ -6,7 +6,7 @@ module.exports.request = request;
 async function request(action = "",user_id = "",extra_data = "") {
 
 
-    const uri = "mongodb://localhost:27017";
+    const uri = "mongodb://localhost:25565";
 
     const client = new MongoClient(uri);
     let retour = 0;
