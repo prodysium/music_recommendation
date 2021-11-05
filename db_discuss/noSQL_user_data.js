@@ -5,12 +5,10 @@ module.exports.request = request;
 
 async function request(action = "",user_id = "",extra_data = "") {
 
-
     const uri = "mongodb://localhost:25565";
 
     const client = new MongoClient(uri);
     let retour = 0;
-
 
     try {
         // Connect to the MongoDB cluster
@@ -23,10 +21,12 @@ async function request(action = "",user_id = "",extra_data = "") {
                 console.log("une action de récupération des données d'un user est sollicitée");
                 retour = await getUserData(client,user_id);
                 break;
+
             case "add_data" :
                 console.log("une action d'ajout de données d'un user est sollicitée");
                 retour = await addUserData(client,user_id,extra_data);
                 break;
+
             case "del_data" :
                 console.log("une action de suppression de données d'un user est sollicitée");
                 retour = await remUserData(client,user_id,extra_data);
@@ -56,7 +56,6 @@ async function getUserData(client,user_id) {
     if (typeof (result) !== "undefined" && result !== null){
         return result;
     }
-
     return 1;
 }
 
@@ -64,7 +63,6 @@ async function addUserData(client, user_id, data) {
     const user_datas = await getUserData(client, user_id);
 
     if (typeof(user_datas) === "undefined" || user_datas === 1 || (user_datas !== 1 && !(user_datas.favories.includes(data)))) {
-
         const resultUpdate = await client.db(database).collection("users_data").updateOne({user: user_id}, {$push: {favories: data}}, {upsert: true});
     }
     return 0;

@@ -1,4 +1,3 @@
-
 <link rel="stylesheet" href="static/my_css/list-groups.css">
 
 <div class="text-center">
@@ -7,54 +6,71 @@
         <div class="col-12">
             <label for="music" class="form-label">Rechercher une musique</label>
             <div class="input-group">
-                <input type="text" class="form-control" <%if(typeof(titre) !== "undefined"){%> value="<%-titre%>" <%}%> name="title_search" id="music_title" placeholder="titre">
-                <input type="text" class="form-control" <%if(typeof(artiste) !== "undefined"){%> value="<%-artiste%>" <%}%> name="artist_search" id="music_artist" placeholder="auteur">
+                <input type="text" class="form-control"
+                        <% if(typeof (titre) !== "undefined"){ %>
+                       value="<%- titre %>"
+                        <% } %>
+                       name="title_search" id="music_title" placeholder="titre">
+                <input type="text" class="form-control"
+                        <% if(typeof (artiste) !== "undefined"){ %>
+                       value="<%- artiste %>"
+                        <% } %>
+                       name="artist_search" id="music_artist" placeholder="auteur">
                 <button value="true" class="btn btn-outline-primary me-2" name="search">Rechercher</button>
             </div>
         </div>
     </form>
 
-
-
-<%if(typeof(result) !== "undefined") {
-    if (result !== []) {%>
+    <% if(typeof (result) !== "undefined") {
+    if (result !== []) { %>
         <div class="list-group">
-        <%
-            var result = result;
-            for (var i = 0; i< result.length && i < 10;i ++) {%>
+            <%
+                var result = result;
+            for (var i = 0; i < result.length && i < 10;i++) { %>
 
-                    <div class="d-flex gap-2 w-100 justify-content-between list-group-item list-group-item-action d-flex gap-3 py-2" aria-current="true" >
-                        <div>
-                            <p class="mb-0" style="text-align: left!important;"><%-result[i].song_name%></p>
-                            <p class="mb-0 opacity-75" style="text-align: left!important;"><%-result[i].artiste_name%></p>
-                            <div style="text-align: left!important;">
-                                <iframe src="https://open.spotify.com/embed/track/<%-result[i].id%>" style="text-align: left!important;" width="300px" height="80px" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-                            </div>
-
-                        </div>
-
-                        <form method="post" action="/search">
-                            <input type="hidden" value=<%if(typeof(titre) !== "undefined"){%> "<%-titre%>"<%}%> name="title_search">
-                            <input type="hidden" value=<%if(typeof(artiste) !== "undefined"){%> "<%-artiste%>"<%}%> name="artist_search">
-                            <input type="hidden" value="<%-result[i].id%>" name="id_fav">
-
-                            <input type="hidden" name="action" <%if(typeof (user_datas) !== "undefined" && !user_datas[i]) {%> value="add" <%} else {%> value="del" <%}%>>
-
-                            <input type="image" id="action_fav" style="width:55px; height:55px"
-
-                            <%if(typeof (user_datas) !== "undefined" && !user_datas[i]) {%>
-                                 alt="Ajouter aux Favoris" src="images/Logo-plus.png">
-                            <%} else {%>
-                                 alt="Supprimer des Favoris" src="images/Logo-moins.png">
-                            <%}%>
-                        </form>
-
+            <div class="d-flex gap-2 w-100 justify-content-between list-group-item list-group-item-action d-flex gap-3 py-2"
+                 aria-current="true">
+                <div>
+                    <p class="mb-0" style="text-align: left!important;"><%- result[i].song_name %></p>
+                    <p class="mb-0 opacity-75" style="text-align: left!important;"><%- result[i].artiste_name %></p>
+                    <div style="text-align: left!important;">
+                        <iframe src="https://open.spotify.com/embed/track/<%- result[i].id %>"
+                                style="text-align: left!important;" width="300px" height="80px"
+                                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
                     </div>
-            <%}%>
+
+                </div>
+
+                <form method="post" action="/search">
+                    <input type="hidden" value=<% if(typeof (titre) !== "undefined"){ %> "<%- titre %>"
+                            <% } %>
+                           name="title_search">
+                    <input type="hidden" value=<% if(typeof (artiste) !== "undefined"){ %> "<%- artiste %>"
+                            <% } %>
+                           name="artist_search">
+                    <input type="hidden" value="<%- result[i].id %>" name="id_fav">
+
+                    <input type="hidden" name="action"
+                    <% if(typeof (user_datas) !== "undefined" && !user_datas[i]) { %> value="add"
+                    <% } else { %> value="del"
+                            <% } %>
+                    >
+
+                    <input type="image" id="action_fav" style="width:55px; height:55px"
+
+                    <% if(typeof (user_datas) !== "undefined" && !user_datas[i]) { %>
+                           alt="Ajouter aux Favoris" src="images/Logo-plus.png">
+                    <% } else { %>
+                        alt="Supprimer des Favoris" src="images/Logo-moins.png">
+                    <% } %>
+                </form>
+
+            </div>
+            <% } %>
         </div>
-        <%} else {%>
-            <p> result est vide</p>
-        <%}%>
-<%}%>
+    <% } else { %>
+        <p> result est vide</p>
+    <% } %>
+    <% } %>
 
 </div>

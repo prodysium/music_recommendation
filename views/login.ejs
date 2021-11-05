@@ -24,22 +24,22 @@
         }
     </style>
 
-    <%if( typeof(mes_erreurs) !=="undefined") {%>
+    <% if( typeof (mes_erreurs) !== "undefined") { %>
 
         <style>
             .pseudo_error, .password_error {
-                border-color: rgb(255,50,50);
+                border-color: rgb(255, 50, 50);
             }
 
         </style>
 
         <script>
-            let mess_err = '<%= mes_erreurs%>' ;
+            let mess_err = '<%= mes_erreurs %>';
             for (const messErrKey in mess_err) {
                 console.log(messErrKey);
             }
         </script>
-    <%}%>
+    <% } %>
 
 </head>
 <body class="text-center">
@@ -49,16 +49,17 @@
     <form method="post" action="/login">
         <h1 class="h3 mb-3 fw-normal text-color-signin">Connectez-vous</h1>
 
-        <%if( typeof(mes_erreurs) !=="undefined") {%>
+        <% if( typeof (mes_erreurs) !== "undefined") { %>
             <p style="color: red;">Mauvais identifiant ou mot de passe.</p>
-        <%}%>
+        <% } %>
 
         <div class="form-floating">
             <input type="text" class="form-control pseudo_error" id="floatingInput" name="pseudo" placeholder="pseudo">
             <label for="floatingInput">Pseudo</label>
         </div>
         <div class="form-floating">
-            <input type="password" class="form-control password_error" id="floatingPassword" name="password" placeholder="mot de passe">
+            <input type="password" class="form-control password_error" id="floatingPassword" name="password"
+                   placeholder="mot de passe">
             <label for="floatingPassword">Mot De Passe</label>
         </div>
 
@@ -70,7 +71,6 @@
         <button class="w-100 btn btn-lg btn-primary" type="submit">Se Connecter</button>
     </form>
 </main>
-
 
 
 </body>

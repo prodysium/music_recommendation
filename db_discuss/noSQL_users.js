@@ -6,12 +6,10 @@ module.exports.request = request;
 
 async function request(action = "",pseudo= "",mail= "",password= "",user_id = "",extra_data = "") {
 
-
     const uri = "mongodb://localhost:25565";
 
     const client = new MongoClient(uri);
     let retour = 0;
-
 
     try {
         // Connect to the MongoDB cluster
@@ -24,26 +22,32 @@ async function request(action = "",pseudo= "",mail= "",password= "",user_id = ""
                 console.log("une action de login est sollicitée");
                 retour = await testLogin(client,pseudo,password);
                 break;
+
             case "signup" :
                 console.log("une action de sign up est sollicitée");
                 retour = await createUser(client,pseudo,mail,password);
                 break;
+
             case "pass_change" :
                 console.log("une action de changement de mot de passe est sollicitée");
                 retour = await changePassword(client,user_id,extra_data);
                 break;
+
             case "pseudo_change" :
                 console.log("une action de changement de pseudo est sollicitée");
                 retour = await changePseudo(client,user_id,extra_data);
                 break;
+
             case "mail_change" :
                 console.log("une action de changement de mail est sollicitée");
                 retour = await changeMail(client,user_id,extra_data);
                 break;
+
             case "infos_change" :
                 console.log("une action de changement d'informations personnelles est sollicitée");
                 retour = await changeInfos(client,user_id,extra_data);
                 break;
+
             default :
                 console.log("aucune action sollicitée");
         }
@@ -71,9 +75,7 @@ async function testLogin(client,pseudo,password) {
     let result = await client.db(database).collection('users').findOne({pseudo : pseudo});
     console.log(result);
     if (result !== null && result.password === password) {
-
         return [0,result._id.toString()];
-
     }
     return [1];
 }
@@ -87,7 +89,6 @@ async function testUser(client,mail = "",pseudo = "") {
     }
 
     if (typeof(result) !== "undefined") {
-
         let val = await result.toArray();
         let i = 0;
         val.forEach((elem) => {
@@ -119,7 +120,6 @@ async function createUser(client,pseudo,mail,password) {
 }
 
 async function changePassword(client,user_id,new_pass) {
-
     let resultUser = await client.db(database).collection("users").findOne({_id : {$eq: ObjectID(user_id)}});
 
     if (resultUser) {
@@ -162,8 +162,8 @@ async function changeInfos(client,user_id,infos_array) {
     let sexe = infos_array[1];
     let dept = infos_array[2];
     let pays = infos_array[3];
-
     let resultUser = await client.db(database).collection("users").findOne({_id : {$eq: ObjectID(user_id)}});
+
     if (age === "") {
         age = resultUser.age;
     }

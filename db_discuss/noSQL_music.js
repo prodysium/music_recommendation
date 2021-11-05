@@ -5,12 +5,10 @@ module.exports.request = request;
 
 async function request(action = "",artiste = "", titre = "",ids = []) {
 
-
     const uri = "mongodb://localhost:25565";
 
     const client = new MongoClient(uri);
     let retour = 0;
-
 
     try {
         // Connect to the MongoDB cluster
@@ -23,9 +21,12 @@ async function request(action = "",artiste = "", titre = "",ids = []) {
                 console.log("une action de recherche de musique est sollicitée");
                 retour = await getMusicFromSearch(client, artiste, titre);
                 break;
+
             case "get_musics":
                 console.log("une action de récupération de musiques est sollicitée");
                 retour = await getMusics(client,ids);
+                break;
+
             default :
                 console.log("aucune action sollicitée");
         }
