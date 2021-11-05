@@ -53,7 +53,7 @@ async function disconnection(client) {
 async function getUserData(client,user_id) {
     const result = await client.db(database).collection("users_data").findOne({user: user_id});
 
-    if (typeof(result) !== "undefined"){
+    if (typeof (result) !== "undefined" && result !== null){
         return result;
     }
 
@@ -63,7 +63,7 @@ async function getUserData(client,user_id) {
 async function addUserData(client, user_id, data) {
     const user_datas = await getUserData(client, user_id);
 
-    if (user_datas !== null && !(user_datas.favories.includes(data))) {
+    if (typeof(user_datas) === "undefined" || user_datas === 1 || (user_datas !== 1 && !(user_datas.favories.includes(data)))) {
 
         const resultUpdate = await client.db(database).collection("users_data").updateOne({user: user_id}, {$push: {favories: data}}, {upsert: true});
     }
@@ -75,6 +75,5 @@ async function remUserData(client,user_id,data) {
         {$pull: {
             favories: data
         }});
-    console.log(resultUpdate);
     return 0;
 }

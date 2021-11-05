@@ -5,7 +5,6 @@ const request_user = require('../db_discuss/noSQL_users');
 const request_data = require('../db_discuss/noSQL_user_data');
 const request_music = require('../db_discuss/noSQL_music');
 
-
 //sur le path /login -> ouverture de la page de connexion
 router.get ('/login', (req, res) => {
     res.clearCookie("utilisateur");
@@ -181,7 +180,7 @@ router.post("/search",(req,res) => {
             cookieUser = results[1];
         }
     }
-
+    console.log(req.body);
     if(typeof(req.body.id_fav) !== undefined && req.body.action === "add") {
         request_data.request("add_data",cookieUser,req.body.id_fav).then();
     } else {
@@ -198,7 +197,7 @@ router.post("/search",(req,res) => {
         let datas = [];
         if (user_datas !== null) {
             for (let i = 0; i < result.length; i++) {
-                if (user_datas.favories.includes(result[i].id)) {
+                if (user_datas !== 1 && user_datas.favories.includes(result[i].id)) {
                     datas[i] = true;
                 } else {
                     datas[i] = false;
