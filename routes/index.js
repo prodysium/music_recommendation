@@ -59,6 +59,29 @@ router.get("/settings", (req, res) => {
 router.get("/search", (req, res) => {
     res.render('profile.ejs', {page: "search"});
 });
+//--------------------------------------------------
+//affiche la page de recommendation de musique
+router.get("/recommendation", (req, res) => {
+    if (typeof (req.headers.cookie) === "undefined") {
+        res.redirect("/login");
+    }
+    let header = req.headers;
+    let reqCookies = req.headers.cookie.split(";");
+    let cookieUser = "";
+    for (let i = 0; i < reqCookies.length; i++) {
+        if (reqCookies[i].startsWith("utilisateur")) {
+            let results = reqCookies[i].split("=");
+            cookieUser = results[1];
+        }
+    }
+    request_data.request("get_data", cookieUser).then((result) => {
+        request_music.request("get_musics", "", "", result.favories).then((values) => {
+            res.render('recommendation.ejs', {
+                user_recoms: values
+            });
+        });
+    });
+});
 
 //--------------------------------------------------
 router.get("/testPY", (req, res) => {
