@@ -27,6 +27,10 @@ async function request(action = "",pseudo= "",mail= "",password= "",user_id = ""
                 console.log("une action de sign up est sollicitée");
                 retour = await createUser(client,pseudo,mail,password);
                 break;
+            case "get_user_info":
+                console.log("une action de get user info est sollicitée");
+                retour = await getUserInfo(client,user_id);
+                break;
 
             case "pass_change" :
                 console.log("une action de changement de mot de passe est sollicitée");
@@ -73,7 +77,6 @@ async function getRandomUser(client){
 
 async function testLogin(client,pseudo,password) {
     let result = await client.db(database).collection('users').findOne({pseudo : pseudo});
-    console.log(result);
     if (result !== null && result.password === password) {
         return [0,result._id.toString()];
     }
@@ -103,6 +106,17 @@ async function testUser(client,mail = "",pseudo = "") {
     return [1];
     //console.log(result);
 }
+async function getUserInfo(client,id) {
+    let result = await client.db(database).collection('users').findOne({_id : {$eq: ObjectID(id)}}, {projection : {password: 0}});
+    if (typeof (result) !== "undefined" && result !== null) {
+        return [0, result];
+    } else {
+        return [0,null];
+    }
+}
+
+
+
 
 async function createUser(client,pseudo,mail,password) {
     let resultPseudo = await client.db(database).collection('users').findOne({pseudo : pseudo});

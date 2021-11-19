@@ -51,7 +51,35 @@ router.get("/favories", (req, res) => {
 //--------------------------------------------------
 //affiche la page settings
 router.get("/settings", (req, res) => {
-    res.render('profile.ejs', {page: "settings"});
+    if (typeof (req.headers.cookie) === "undefined") {
+        res.redirect("/login");
+    }
+    let header = req.headers;
+    let reqCookies = req.headers.cookie.split(";");
+    let cookieUser = "";
+    for (let i = 0; i < reqCookies.length; i++) {
+        if (reqCookies[i].startsWith("utilisateur")) {
+            let results = reqCookies[i].split("=");
+            cookieUser = results[1];
+        }
+    }
+    request_user.request("get_user_info", '', '', '', cookieUser).then((result) => {
+        res.render('profile.ejs', {
+            user_datas:result[1],
+            page: "settings"
+        });
+
+    });
+});
+
+//--------------------------------------------------
+//affiche la page de changement de mot de passe
+router.get("/password", (req, res) => {
+    if (typeof (req.headers.cookie) === "undefined") {
+        res.redirect("/login");
+    }
+
+    res.render('password_change_profile.ejs');
 });
 
 //--------------------------------------------------
@@ -59,6 +87,7 @@ router.get("/settings", (req, res) => {
 router.get("/search", (req, res) => {
     res.render('profile.ejs', {page: "search"});
 });
+
 //--------------------------------------------------
 //affiche la page de recommendation de musique
 router.get("/recommendation", (req, res) => {
@@ -104,13 +133,10 @@ router.get("/testPY", (req, res) => {
 //======================================================================================================================
 //router.post
 
-
 //--------------------------------------------------
 //retour de la page login quand l'utilisateur essaye de se connecter
 router.post("/login", [
     check('pseudo').isLength({min: 3}).withMessage('pseudo invalid'),
-
-    check('password').isLength({min: 8}).withMessage('password invalid'),
 ], (req, res) => {
     res.clearCookie("utilisateur");
     const errors = validationResult(req);
@@ -143,8 +169,6 @@ router.post('/signup', [
     check('mail').isEmail().withMessage('mail not well formed'),
 
     check('pseudo').isLength({min: 3}).withMessage('pseudo invalid'),
-
-    check('password').isLength({min: 8}).withMessage('password invalid'),
 
 ], (req, res) => {
     res.clearCookie("utilisateur");
@@ -262,7 +286,7 @@ router.post("/settings", (req, res) => {
             res.render("profile.ejs", {page: "settings", mes_erreurs: "db exec problem"});
         });
     } else if (req.body.pass_change) {
-        res.redirect("/change_pass");
+        res.redirect("/password");
     } else if (req.body.pseudo_change) {
         if (req.body.pseudo.length < 3) {
             res.render("profile.ejs", {page: "settings", mes_erreurs: "pseudo invalid"});
@@ -289,8 +313,23 @@ router.post("/settings", (req, res) => {
 });
 
 //--------------------------------------------------
-router.get("/change_pass", (req, res) => {
-    res.render('password_change_profile.ejs')
+//retour de la page de changement de mot de passe
+router.post("/password", (req, res) => {
+    if (typeof (req.headers.cookie) === "undefined") {
+        res.redirect("/login");
+    }
+    let reqCookies = req.headers.cookie.split(";");
+    let cookieUser = "";
+    for (let i = 0; i < reqCookies.length; i++) {
+        if (reqCookies[i].startsWith("utilisateur")) {
+            let results = reqCookies[i].split("=");
+            cookieUser = results[1];
+        }
+    }
+    console.log(req.body);
+    request_user.request("pass_change",'','','',cookieUser,req.body.password).then((value ) => {
+        res.redirect("/settings");
+    });
 });
 
 

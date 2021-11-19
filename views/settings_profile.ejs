@@ -13,6 +13,12 @@ var errBD = false; %>
     } %>
 <% } %>
 
+<%var datas = null;
+if (typeof (user_datas) !== "undefined") {
+    datas = user_datas;
+    console.log(datas);
+}%>
+
 <div class="text-center">
 
     <div class="container">
@@ -34,7 +40,7 @@ var errBD = false; %>
                         <div class="col-12">
                             <label for="age" class="form-label">Age</label>
                             <div class="input-group has-validation">
-                                <input type="number" class="form-control" id="age" name="age" placeholder="Age"
+                                <input type="number" class="form-control" id="age" name="age" placeholder="Age" <%if (datas !== null ) {%> value="<%- datas.age%>" <%}%>
                                        max="120">
                             </div>
                         </div>
@@ -43,9 +49,9 @@ var errBD = false; %>
                             <div class="input-group has-validation">
                                 <select class="form-control" id="sexe" name="sexe">
                                     <option value="">--Choisir une option--</option>
-                                    <option value="H">Homme</option>
-                                    <option value="F">Femme</option>
-                                    <option value="A">Autre</option>
+                                    <option value="H" <%if (datas !== null && datas.sexe === "H") {%> selected <%}%>>Homme</option>
+                                    <option value="F" <%if (datas !== null && datas.sexe === "F") {%> selected <%}%>>Femme</option>
+                                    <option value="A" <%if (datas !== null && datas.sexe === "A") {%> selected <%}%>>Autre</option>
                                 </select>
                             </div>
                         </div>
@@ -157,6 +163,12 @@ var errBD = false; %>
                                     <option value="976">976 - Mayotte</option>
 
                                 </select>
+                                <%if (datas !== null) {%>
+                                <script>
+                                    let dattas = <%- JSON.stringify(datas) %>;
+                                    let selectDept = document.getElementById("departement").value = dattas.dept;
+                                </script>
+                                <%}%>
                             </div>
                         </div>
                         <div class="col-12">
@@ -418,6 +430,12 @@ var errBD = false; %>
                                     <option value="Zambie">Zambie</option>
                                     <option value="Zimbabwe">Zimbabwe</option>
                                 </select>
+                                <%if (datas !== null) {%>
+                                    <script>
+                                        let datttas = <%- JSON.stringify(datas) %>;
+                                        let selectPays = document.getElementById("pays").value = datttas.pays;
+                                    </script>
+                                <%}%>
                             </div>
                         </div>
                         <input name="infos_change" value="true" hidden>
@@ -430,7 +448,7 @@ var errBD = false; %>
                     <form class="needs-validation" action="/settings" method="post">
                         <div class="col-12">
                             <label for="username" class="form-label">Pseudo</label>
-                            <p style="text-align: left">Pseudo actuel : </p>
+                            <p style="text-align: left">Pseudo actuel : <%if (datas !== null) {%> <%-datas.pseudo%> <%}%> </p>
                             <div class="input-group has-validation">
                                 <span class="input-group-text">@</span>
                                 <input type="text" class="form-control" id="username" name="pseudo"
@@ -453,7 +471,7 @@ var errBD = false; %>
                     <form class="needs-validation" action="/settings" method="post">
                         <div class="col-12">
                             <label for="email" class="form-label">Email</label>
-                            <p style="text-align: left">Mail actuel : </p>
+                            <p style="text-align: left">Mail actuel : <%if (datas !== null) {%> <%-datas.email%> <%}%></p>
                             <input type="email" class="form-control" id="email" name="mail"
                                    placeholder="you@example.com">
                             <div class="invalid-feedback"
