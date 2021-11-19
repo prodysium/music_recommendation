@@ -1,14 +1,14 @@
 <% var pi = false;
 var mi = false;
 var errBD = false; %>
-<% if (typeof (mes_erreurs) !== "undefined") { %>
-<% if (mes_erreurs === "pseudo invalid") {
+<% if (typeof (error_list) !== "undefined") { %>
+<% if (error_list === "pseudo invalid") {
     pi = true;
 }
-    if (mes_erreurs === "mail invalid") {
+    if (error_list === "mail invalid") {
         mi = true;
     }
-    if (mes_erreurs === "db exec problem") {
+    if (error_list === "db exec problem") {
         errBD = true;
     } %>
 <% } %>

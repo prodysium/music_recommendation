@@ -26,7 +26,7 @@
 
     </style>
 
-    <% if( typeof (mes_erreurs) !== "undefined") { %>
+    <% if( typeof (error_list) !== "undefined") { %>
 
         <style>
             .mail_error, .pseudo_error, .password_error {
@@ -36,7 +36,7 @@
         </style>
 
         <script>
-            let mess_err = '<%= mes_erreurs %>';
+            let mess_err = '<%= error_list %>';
             for (const messErrKey in mess_err) {
                 console.log(messErrKey);
             }
@@ -53,7 +53,7 @@
     <form method="post" action="/signup">
         <h1 class="h3 mb-3 fw-normal text-color-signin">Créer un compte</h1>
 
-        <% if( typeof (mes_erreurs) !== "undefined") { %>
+        <% if( typeof (error_list) !== "undefined") { %>
             <p style="color: red;">Erreur lors de la création de votre compte.</p>
         <% } %>
         <div class="form-floating">
