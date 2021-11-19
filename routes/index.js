@@ -27,7 +27,7 @@ router.get('/signup', (req, res) => {
 //quand un utilisateur va sur la page des favoris, la page par défaut quand on se connecte
 router.get("/favories", (req, res) => {
     if (typeof (req.headers.cookie) === "undefined") {
-        res.redirect("/login",{error_list: ["Merci de vous reconnecter"]});
+        res.redirect("/login");
     }
     let header = req.headers;
     let reqCookies = req.headers.cookie.split(";");
@@ -52,7 +52,7 @@ router.get("/favories", (req, res) => {
 //affiche la page settings
 router.get("/settings", (req, res) => {
     if (typeof (req.headers.cookie) === "undefined") {
-        res.redirect("/login",{error_list: ["Merci de vous reconnecter"]});
+        res.redirect("/login");
     }
     let header = req.headers;
     let reqCookies = req.headers.cookie.split(";");
@@ -76,9 +76,8 @@ router.get("/settings", (req, res) => {
 //affiche la page de changement de mot de passe
 router.get("/password", (req, res) => {
     if (typeof (req.headers.cookie) === "undefined") {
-        res.redirect("/login",{error_list: ["Merci de vous reconnecter"]});
+        res.redirect("/login");
     }
-
     res.render('password_change_profile.ejs');
 });
 
@@ -86,16 +85,18 @@ router.get("/password", (req, res) => {
 //affiche la page de recherche de musique
 router.get("/search", (req, res) => {
     if (typeof (req.headers.cookie) === "undefined") {
-        res.redirect("/login",{error_list: ["Merci de vous reconnecter"]});
+        res.redirect("/login");
     }
-    res.render('profile.ejs', {page: "search"});
+    res.render('profile.ejs', {
+        page: "search"
+    });
 });
 
 //--------------------------------------------------
 //affiche la page de recommendation de musique
 router.get("/recommendation", (req, res) => {
     if (typeof (req.headers.cookie) === "undefined") {
-        res.redirect("/login",{error_list: ["Merci de vous reconnecter"]});
+        res.redirect("/login");
     }
     let header = req.headers;
     let reqCookies = req.headers.cookie.split(";");
@@ -129,7 +130,7 @@ router.get("/testPY", (req, res) => {
         }
         console.log(stdout);
     });
-    res.redirect("/login",{error_list: ["Merci de vous reconnecter"]});
+    res.redirect("/login");
 });
 
 
@@ -148,10 +149,16 @@ router.post("/login", [
         request_user.request("login", req.body.pseudo, "", req.body.password).then((value) => {
             result = value;
             if (result[0] === 0) {
-                res.cookie("utilisateur", result[1], {maxAge: 3600 * 1000});
+                res.cookie("utilisateur", result[1], {
+                    maxAge: 3600 * 1000
+                });
                 res.redirect("/favories");
             } else {
-                res.render("login.ejs", {error_list: "pseudo-password unknown"});
+                res.render("login.ejs", {
+                    error_list: [
+                        "pseudo-password unknown"
+                    ]
+                });
             }
         });
     } else {
@@ -161,7 +168,9 @@ router.post("/login", [
                 erreurs[i] = i.msg;
             }
         }
-        res.render('login.ejs', {error_list: erreurs});
+        res.render('login.ejs', {
+            error_list: erreurs
+        });
     }
 });
 
@@ -181,9 +190,15 @@ router.post('/signup', [
         request_user.request("signup", req.body.pseudo, req.body.mail, req.body.password).then((retour) => {
             if (!retour[0]) {
                 res.cookie("utilisateur", retour[1], {maxAge: 3600 * 1000});
-                res.render('profile.ejs', {page: "favories"});
+                res.render('profile.ejs', {
+                    page: "favories"
+                });
             } else {
-                res.render("signup.ejs", {error_list: ["pseudo-mail already used"]});
+                res.render("signup.ejs", {
+                    error_list: [
+                        "pseudo-mail already used"
+                    ]
+                });
             }
         });
     } else {
@@ -193,7 +208,9 @@ router.post('/signup', [
                 erreurs[i] = i.msg;
             }
         }
-        res.render('signup.ejs', {error_list: erreurs});
+        res.render('signup.ejs', {
+            error_list: erreurs
+        });
     }
 });
 
@@ -201,7 +218,7 @@ router.post('/signup', [
 //retour de la page favories
 router.post("/favories", (req, res) => {
     if (typeof (req.headers.cookie) === "undefined") {
-        res.redirect("/login",{error_list: ["Merci de vous reconnecter"]});
+        res.redirect("/login");
     }
     let reqCookies = req.headers.cookie.split(";");
     let cookieUser = "";
@@ -227,7 +244,7 @@ router.post("/favories", (req, res) => {
 //retour de la page search
 router.post("/search", (req, res) => {
     if (typeof (req.headers.cookie) === "undefined") {
-        res.redirect("/login", {error_list: ["Merci de vous reconnecter"]});
+        res.redirect("/login");
     }
     let reqCookies = req.headers.cookie.split(";");
     let cookieUser = "";
@@ -280,7 +297,7 @@ function endPostSearch(req, res, cookieUser) {
 //retour de la page settings, on change les paramètres qui sont changés
 router.post("/settings", (req, res) => {
     if (typeof (req.headers.cookie) === "undefined") {
-        res.redirect("/login",{error_list: ["Merci de vous reconnecter"]});
+        res.redirect("/login");
     }
     let reqCookies = req.headers.cookie.split(";");
     let cookieUser = "";
@@ -301,24 +318,48 @@ router.post("/settings", (req, res) => {
         res.redirect("/password");
     } else if (req.body.pseudo_change) {
         if (req.body.pseudo.length < 3) {
-            res.render("profile.ejs", {page: "settings", error_list: "pseudo invalid"});
+            res.render("profile.ejs", {
+                page: "settings",
+                error_list: [
+                    "pseudo invalid"
+                ]
+            });
         } else {
             request_user.request("pseudo_change", "", "", "", cookieUser, req.body.pseudo).then((value) => {
                 if (!value) {
-                    res.render("profile.ejs", {page: "settings"});
+                    res.render("profile.ejs", {
+                        page: "settings"
+                    });
                 }
-                res.render("profile.ejs", {page: "settings", error_list: "db exec problem"});
+                res.render("profile.ejs", {
+                    page: "settings",
+                    error_list: [
+                        "db exec problem"
+                    ]
+                });
             });
         }
     } else if (req.body.mail_change) {
         if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(req.body.mail))) {
-            res.render("profile.ejs", {page: "settings", error_list: "mail invalid"});
+            res.render("profile.ejs", {
+                page: "settings",
+                error_list: [
+                    "mail invalid"
+                ]
+            });
         } else {
             request_user.request("mail_change", "", "", "", cookieUser, req.body.mail).then((value) => {
                 if (!value) {
-                    res.render("profile.ejs", {page: "settings"});
+                    res.render("profile.ejs", {
+                        page: "settings"
+                    });
                 }
-                res.render("profile.ejs", {page: "settings", error_list: "db exec problem"});
+                res.render("profile.ejs", {
+                    page: "settings",
+                    error_list: [
+                        "db exec problem"
+                    ]
+                });
             });
         }
     }
@@ -328,7 +369,7 @@ router.post("/settings", (req, res) => {
 //retour de la page de changement de mot de passe
 router.post("/password", (req, res) => {
     if (typeof (req.headers.cookie) === "undefined") {
-        res.redirect("/login",{error_list: ["Merci de vous reconnecter"]});
+        res.redirect("/login");
     }
     let reqCookies = req.headers.cookie.split(";");
     let cookieUser = "";
@@ -342,7 +383,11 @@ router.post("/password", (req, res) => {
         if (!value) {
             res.redirect("/settings");
         } else {
-            res.redirect("/settings", {error_list:["pass_change_error"]});
+            res.render("password_change_profile.ejs", {
+                error_list: [
+                    "pass_change_error"
+                ]
+            });
         }
     });
 });
