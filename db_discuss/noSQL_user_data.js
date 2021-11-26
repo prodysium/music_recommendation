@@ -1,5 +1,6 @@
 const { MongoClient, ObjectID} = require('mongodb');
 const database = 'music_recommendation';
+const colors = require('colors');
 
 module.exports.request = request;
 
@@ -14,26 +15,27 @@ async function request(action = "",user_id = "",extra_data = "") {
         // Connect to the MongoDB cluster
         await client.connect();
 
-        console.log('tu est connecté');
+        console.log('Users Datas'.brightCyan);
+        console.log('tu est connecté'.magenta);
 
         switch (action) {
             case "get_data" :
-                console.log("une action de récupération des données d'un user est sollicitée");
+                console.log("une action de récupération des données d'un user est sollicitée".cyan);
                 retour = await getUserData(client,user_id);
                 break;
 
             case "add_data" :
-                console.log("une action d'ajout de données d'un user est sollicitée");
+                console.log("une action d'ajout de données d'un user est sollicitée".cyan);
                 retour = await addUserData(client,user_id,extra_data);
                 break;
 
             case "del_data" :
-                console.log("une action de suppression de données d'un user est sollicitée");
+                console.log("une action de suppression de données d'un user est sollicitée".cyan);
                 retour = await remUserData(client,user_id,extra_data);
                 break;
 
             default :
-                console.log("aucune action sollicitée");
+                console.log("aucune action sollicitée".cyan);
         }
 
     } finally {
@@ -45,7 +47,7 @@ async function request(action = "",user_id = "",extra_data = "") {
 async function disconnection(client) {
     // Close the connection to the MongoDB cluster
     await client.close();
-    console.log('tu est déconnecté');
+    console.log('tu est déconnecté'.magenta);
 }
 
 // Add functions that make DB calls here

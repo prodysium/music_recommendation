@@ -1,22 +1,24 @@
 <% var pi = false;
 var mi = false;
 var errBD = false; %>
-<% if (typeof (error_list) !== "undefined") { %>
-<% if (error_list === "pseudo invalid") {
-    pi = true;
-}
-    if (error_list === "mail invalid") {
-        mi = true;
-    }
-    if (error_list === "db exec problem") {
-        errBD = true;
-    } %>
-<% } %>
+<% if (typeof (error_list) !== "undefined") {
+
+    error_list.forEach((item, index) => {
+        if (item === "pseudo invalid") {
+            pi = true;
+        }
+        if (item === "mail invalid") {
+            mi = true;
+        }
+        if (item === "db exec problem") {
+            errBD = true;
+        }
+    })
+} %>
 
 <%var datas = null;
 if (typeof (user_datas) !== "undefined") {
     datas = user_datas;
-    console.log(datas);
 }%>
 
 <div class="text-center">
@@ -31,7 +33,7 @@ if (typeof (user_datas) !== "undefined") {
             <% if ( errBD === true){ %> style="display: block"
                     <% } %>
             >
-                L'opération n'a pas pu être éxécutée. Merci de réhitérer l'opération.
+                <p style="color: red">L'opération n'a pas pu être éxécutée car une erreur a eu lieu. Merci de réhitérer l'opération plus tard.</p>
             </div>
 
             <div class="row g-5">
@@ -457,7 +459,7 @@ if (typeof (user_datas) !== "undefined") {
                                 <% if ( pi === true){ %> style="display: block"
                                         <% } %>
                                 >
-                                    Un pseudo valide doit être saisi.
+                                    <p style="color: red">Un pseudo valide doit être saisi.</p>
                                 </div>
                             </div>
                         </div>
@@ -478,7 +480,7 @@ if (typeof (user_datas) !== "undefined") {
                             <% if ( mi === true){ %> style="display: block"
                                     <% } %>
                             >
-                                Merci d'entrer un mail valide.
+                                <p style="color: red">Merci d'entrer un mail valide.</p>
                             </div>
                         </div>
                         <input name="mail_change" value="true" hidden>

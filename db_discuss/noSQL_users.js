@@ -1,6 +1,7 @@
 const { MongoClient, ObjectID} = require('mongodb');
 const {use} = require("express/lib/router");
 const database = 'music_recommendation';
+const colors = require('colors');
 
 module.exports.request = request;
 
@@ -15,45 +16,46 @@ async function request(action = "",pseudo= "",mail= "",password= "",user_id = ""
         // Connect to the MongoDB cluster
         await client.connect();
 
-        console.log('tu est connecté');
+        console.log('Users'.brightCyan);
+        console.log('tu est connecté'.magenta);
 
         switch (action) {
             case "login" :
-                console.log("une action de login est sollicitée");
+                console.log("une action de login est sollicitée".cyan);
                 retour = await testLogin(client,pseudo,password);
                 break;
 
             case "signup" :
-                console.log("une action de sign up est sollicitée");
+                console.log("une action de sign up est sollicitée".cyan);
                 retour = await createUser(client,pseudo,mail,password);
                 break;
             case "get_user_info":
-                console.log("une action de get user info est sollicitée");
+                console.log("une action de get user info est sollicitée".cyan);
                 retour = await getUserInfo(client,user_id);
                 break;
 
             case "pass_change" :
-                console.log("une action de changement de mot de passe est sollicitée");
+                console.log("une action de changement de mot de passe est sollicitée".cyan);
                 retour = await changePassword(client,user_id,extra_data);
                 break;
 
             case "pseudo_change" :
-                console.log("une action de changement de pseudo est sollicitée");
+                console.log("une action de changement de pseudo est sollicitée".cyan);
                 retour = await changePseudo(client,user_id,extra_data);
                 break;
 
             case "mail_change" :
-                console.log("une action de changement de mail est sollicitée");
+                console.log("une action de changement de mail est sollicitée".cyan);
                 retour = await changeMail(client,user_id,extra_data);
                 break;
 
             case "infos_change" :
-                console.log("une action de changement d'informations personnelles est sollicitée");
+                console.log("une action de changement d'informations personnelles est sollicitée".cyan);
                 retour = await changeInfos(client,user_id,extra_data);
                 break;
 
             default :
-                console.log("aucune action sollicitée");
+                console.log("aucune action sollicitée".cyan);
         }
 
     } finally {
@@ -65,7 +67,7 @@ async function request(action = "",pseudo= "",mail= "",password= "",user_id = ""
 async function disconnection(client) {
     // Close the connection to the MongoDB cluster
     await client.close();
-    console.log('tu est déconnecté');
+    console.log('tu est déconnecté'.magenta);
 }
 
 // Add functions that make DB calls here
@@ -195,6 +197,7 @@ async function changeInfos(client,user_id,infos_array) {
         const result = await client.db(database).collection("users").updateOne({_id: {$eq: ObjectID(user_id)}}, {$set: {age : age, pays : pays, sexe : sexe, dept : dept}});
     }
     let resultPass = await client.db(database).collection('users').findOne({_id: {$eq: ObjectID(user_id)}, age : age, pays : pays, sexe : sexe, dept : dept});
+
     if (typeof (resultPass) !== "undefined" && resultPass._id.toString() === user_id) {
         return 0;
     }

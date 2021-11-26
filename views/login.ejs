@@ -24,12 +24,26 @@
         }
     </style>
 
-    <% if( typeof (error_list) !== "undefined") { %>
-
-        <style>
-            .pseudo_error, .password_error {
-                border-color: rgb(255, 50, 50);
+    <% var pseudo_pass_error = false;
+    var pseudo_error = false;
+    if( typeof (error_list) !== "undefined") {
+        var errList = error_list;
+        errList.forEach((item,index) => {
+            if (item === "pseudo_size") {
+                pseudo_error = true;
             }
+            if (item === "unknown") {
+                pseudo_pass_error = true;
+            }
+        });
+    %>
+        <style>
+            <%if (pseudo_pass_error === true || pseudo_error === true) {%>.pseudo_error {
+                border: 2px solid rgb(255, 50, 50) ;
+            }<%}%>
+            <%if (pseudo_pass_error === true) {%>.password_error {
+                border: 2px solid rgb(255, 50, 50) ;
+            }<%}%>
 
         </style>
 
@@ -49,12 +63,18 @@
     <form method="post" action="/login">
         <h1 class="h3 mb-3 fw-normal text-color-signin">Connectez-vous</h1>
 
-        <% if( typeof (error_list) !== "undefined") { %>
-            <p style="color: red;">Mauvais identifiant ou mot de passe.</p>
-        <% } %>
+        <% if( typeof (error_list) !== "undefined") {
+            if (pseudo_error === true) { %>
+                <p style="color: red;">Le Pseudo n'a pas une taille suffisante</p>
+           <% }
+           if (pseudo_pass_error === true) {%>
+            <p style="color: red;">Mauvais identifiant et/ou mot de passe.</p>
+        <% }
+        } %>
 
         <div class="form-floating">
-            <input type="text" class="form-control pseudo_error" id="floatingInput" name="pseudo" placeholder="pseudo">
+            <input type="text" class="form-control pseudo_error" id="floatingInput" name="pseudo" placeholder="pseudo"
+            <%if (typeof(data_list) !== "undefined"){%> value="<%- data_list[0]%>" <%}%>>
             <label for="floatingInput">Pseudo</label>
         </div>
         <div class="form-floating">
@@ -67,11 +87,11 @@
             <label>
                 <p class="text-color-signin">Pas de compte : <a class="" href="/signup">Inscrivez-vous</a></p>
             </label>
+            <a class="" href="/testPY">testPY</a>
         </div>
         <button class="w-100 btn btn-lg btn-primary" type="submit">Se Connecter</button>
     </form>
 </main>
-
 
 </body>
 </html>

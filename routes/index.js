@@ -119,7 +119,7 @@ router.get("/recommendation", (req, res) => {
 //--------------------------------------------------
 router.get("/testPY", (req, res) => {
     const {exec} = require('child_process');
-    let fichierEtArgs = 'C:\\Users\\jonas\\AppData\\Local\\Programs\\Python\\Python38-32\\python.exe'
+    let fichierEtArgs = 'python3.7'
         + ' recommandationparvoisinetcontenue.py "Si Vos QuerésµYerba Brava"';
     exec(fichierEtArgs, (err, stdout, stderr) => {
         if (err) {
@@ -140,7 +140,7 @@ router.get("/testPY", (req, res) => {
 //--------------------------------------------------
 //retour de la page login quand l'utilisateur essaye de se connecter
 router.post("/login", [
-    check('pseudo').isLength({min: 3}).withMessage('pseudo invalid'),
+    check('pseudo').isLength({min: 3}).withMessage('pseudo_size'),
 ], (req, res) => {
     res.clearCookie("utilisateur");
     const errors = validationResult(req);
@@ -156,7 +156,10 @@ router.post("/login", [
             } else {
                 res.render("login.ejs", {
                     error_list: [
-                        "pseudo-password unknown"
+                        "unknown"
+                    ],
+                    data_list: [
+                        req.body.pseudo
                     ]
                 });
             }
@@ -164,12 +167,16 @@ router.post("/login", [
     } else {
         let erreurs = [];
         if (!errors.isEmpty()) {
+            console.log(errors);
             for (const i of errors.array()) {
-                erreurs[i] = i.msg;
+                erreurs.push(i.msg);
             }
         }
         res.render('login.ejs', {
-            error_list: erreurs
+            error_list: erreurs,
+            data_list: [
+                req.body.pseudo
+            ]
         });
     }
 });
@@ -310,56 +317,90 @@ router.post("/settings", (req, res) => {
     if (req.body.infos_change) {
         request_user.request("infos_change", "", "", "", cookieUser, [req.body.age, req.body.sexe, req.body.departement, req.body.pays]).then((value) => {
             if (!value) {
-                res.render("profile.ejs", {page: "settings"});
+                request_user.request("get_user_info", '', '', '', cookieUser).then((result) => {
+                    res.render('profile.ejs', {
+                        user_datas: result[1],
+                        page: "settings"
+                    });
+                });
+            } else {
+                request_user.request("get_user_info", '', '', '', cookieUser).then((result) => {
+                    res.render('profile.ejs', {
+                        user_datas: result[1],
+                        page: "settings",
+                        error_list: [
+                            "db exec problem"
+                        ]
+                    });
+                });
             }
-            res.render("profile.ejs", {page: "settings", error_list: "db exec problem"});
         });
     } else if (req.body.pass_change) {
         res.redirect("/password");
     } else if (req.body.pseudo_change) {
         if (req.body.pseudo.length < 3) {
-            res.render("profile.ejs", {
-                page: "settings",
-                error_list: [
-                    "pseudo invalid"
-                ]
+            request_user.request("get_user_info", '', '', '', cookieUser).then((result) => {
+                res.render('profile.ejs', {
+                    user_datas: result[1],
+                    page: "settings",
+                    error_list: [
+                        "pseudo invalid"
+                    ]
+                });
             });
         } else {
             request_user.request("pseudo_change", "", "", "", cookieUser, req.body.pseudo).then((value) => {
                 if (!value) {
-                    res.render("profile.ejs", {
-                        page: "settings"
+                    request_user.request("get_user_info", '', '', '', cookieUser).then((result) => {
+                        res.render('profile.ejs', {
+                            user_datas: result[1],
+                            page: "settings"
+                        });
+                    });
+                } else {
+                    request_user.request("get_user_info", '', '', '', cookieUser).then((result) => {
+                        res.render('profile.ejs', {
+                            user_datas: result[1],
+                            page: "settings",
+                            error_list: [
+                                "db exec problem"
+                            ]
+                        });
                     });
                 }
-                res.render("profile.ejs", {
-                    page: "settings",
-                    error_list: [
-                        "db exec problem"
-                    ]
-                });
             });
         }
     } else if (req.body.mail_change) {
         if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(req.body.mail))) {
-            res.render("profile.ejs", {
-                page: "settings",
-                error_list: [
-                    "mail invalid"
-                ]
+            request_user.request("get_user_info", '', '', '', cookieUser).then((result) => {
+                res.render('profile.ejs', {
+                    user_datas: result[1],
+                    page: "settings",
+                    error_list: [
+                        "mail invalid"
+                    ]
+                });
             });
         } else {
             request_user.request("mail_change", "", "", "", cookieUser, req.body.mail).then((value) => {
                 if (!value) {
-                    res.render("profile.ejs", {
-                        page: "settings"
+                    request_user.request("get_user_info", '', '', '', cookieUser).then((result) => {
+                        res.render('profile.ejs', {
+                            user_datas: result[1],
+                            page: "settings"
+                        });
+                    });
+                } else {
+                    request_user.request("get_user_info", '', '', '', cookieUser).then((result) => {
+                        res.render('profile.ejs', {
+                            user_datas: result[1],
+                            page: "settings",
+                            error_list: [
+                                "db exec problem"
+                            ]
+                        });
                     });
                 }
-                res.render("profile.ejs", {
-                    page: "settings",
-                    error_list: [
-                        "db exec problem"
-                    ]
-                });
             });
         }
     }
@@ -379,17 +420,26 @@ router.post("/password", (req, res) => {
             cookieUser = results[1];
         }
     }
-    request_user.request("pass_change",'','','',cookieUser,req.body.password).then((value ) => {
-        if (!value) {
-            res.redirect("/settings");
-        } else {
-            res.render("password_change_profile.ejs", {
-                error_list: [
-                    "pass_change_error"
-                ]
-            });
-        }
-    });
+    if (req.body.password !== "" && req.body.password.length >= 8) {
+        request_user.request("pass_change",'','','',cookieUser,req.body.password).then((value ) => {
+            if (!value) {
+                res.redirect("/settings");
+            } else {
+                res.render("password_change_profile.ejs", {
+                    error_list: [
+                        "pass_change_error"
+                    ]
+                });
+            }
+        });
+    } else {
+        res.render("password_change_profile.ejs", {
+            error_list: [
+                "pass_change_error"
+            ]
+        });
+    }
+
 });
 
 
