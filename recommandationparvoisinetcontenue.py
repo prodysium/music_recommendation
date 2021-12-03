@@ -5,6 +5,7 @@ import numpy as np
 import networkx as nx
 from sklearn.metrics.pairwise import cosine_similarity
 
+
 #Recuperation des datas
 DEFAULT_PATH = "./input/"
 NBR_MUSIQUE_TRAITEMENT = 100

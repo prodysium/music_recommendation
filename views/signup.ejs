@@ -34,21 +34,12 @@
             }
 
         </style>
-
-        <script>
-            let mess_err = '<%= error_list %>';
-            for (const messErrKey in mess_err) {
-                console.log(messErrKey);
-            }
-        </script>
     <% } %>
 
 </head>
 <body class="text-center">
 
 <main class="form-signin">
-
-    <script>console.log(document)</script>
 
     <form method="post" action="/signup">
         <h1 class="h3 mb-3 fw-normal text-color-signin">Créer un compte</h1>
@@ -64,6 +55,7 @@
             <input type="text" class="form-control pseudo_error" id="floatingInput" name="pseudo" placeholder="pseudo">
             <label for="floatingInput">Pseudo</label>
         </div>
+
         <div class="form-floating">
             <input type="password" class="form-control password_error" id="floatingPassword" name="password"
                    placeholder="mot de passe">
