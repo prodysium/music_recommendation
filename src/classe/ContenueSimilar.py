@@ -29,7 +29,7 @@ class ContenueSimilar(Recommandation):
         self.df.drop(["time_signature"], axis=1, inplace=True)
 
         self.normalized_df = (self.df - self.df.mean()) / self.df.std()
-        self.normalized_df_and_limited = self.normalized_df[:100]
+        self.normalized_df_and_limited = self.normalized_df[:1000]
         matrice = self.normalized_df_and_limited.to_numpy()
 
         self.similariter = cosine_similarity(matrice)

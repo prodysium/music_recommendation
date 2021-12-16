@@ -4,6 +4,7 @@ const router = express.Router ();
 const request_user = require('../db_discuss/noSQL_users');
 const request_data = require('../db_discuss/noSQL_user_data');
 const request_music = require('../db_discuss/noSQL_music');
+const pythonCall = require('../python_call/pythonCall');
 
 
 //======================================================================================================================
@@ -110,29 +111,11 @@ router.get("/recommendation", (req, res) => {
     request_data.request("get_data", cookieUser).then((result) => {
         request_music.request("get_musics", "", "", result.favories).then((values) => {
             res.render('recommendation.ejs', {
-                user_recoms: values
+                user_datas: values
             });
         });
     });
 });
-
-//--------------------------------------------------
-router.get("/testPY", (req, res) => {
-    const {exec} = require('child_process');
-    let fichierEtArgs = 'python3.7'
-        + ' recommandationparvoisinetcontenue.py "Si Vos QuerésµYerba Brava"';
-    exec(fichierEtArgs, (err, stdout, stderr) => {
-        if (err) {
-            console.error(err);
-        }
-        if (stderr) {
-            console.error(`stderr: ${stderr}`);
-        }
-        console.log(stdout);
-    });
-    res.redirect("/login");
-});
-
 
 //======================================================================================================================
 //router.post
@@ -167,7 +150,6 @@ router.post("/login", [
     } else {
         let erreurs = [];
         if (!errors.isEmpty()) {
-            console.log(errors);
             for (const i of errors.array()) {
                 erreurs.push(i.msg);
             }
@@ -407,6 +389,121 @@ router.post("/settings", (req, res) => {
 });
 
 //--------------------------------------------------
+//retour de la page recommendation, pour retourner des propositions pour un ID.
+router.post("/recommendation", (req, res) => {
+    if (typeof (req.headers.cookie) === "undefined") {
+        res.redirect("/login");
+    }
+    let reqCookies = req.headers.cookie.split(";");
+    let cookieUser = "";
+    for (let i = 0; i < reqCookies.length; i++) {
+        if (reqCookies[i].startsWith("utilisateur")) {
+            let results = reqCookies[i].split("=");
+            cookieUser = results[1];
+        }
+    }
+    if (typeof (req.body.action) !== undefined && req.body.action === "get_recom") {
+
+        let temp = "init temp";
+        if (pythonCall.retourPython !== []) {
+            temp = pythonCall.retourPython[pythonCall.retourPython.length - 1];
+        }
+
+        if (!temp.includes(req.body.id_music + '  1.000000\n'))
+        pythonCall.getMusiqueSimilar(req.body.id_music);
+
+        setTimeout( function () {
+
+            temp = pythonCall.retourPython[pythonCall.retourPython.length - 1];
+
+
+            let musics = temp.split('\n');
+            musics.shift();
+            musics.shift();
+            musics.pop();
+            let musics_id = [];
+            for (let i = 0; i < musics.length; i++) {
+                let tempMus = musics[i].split(' ');
+                musics_id[i] = tempMus[0];
+            }
+
+            if (musics_id.length > 0) {
+                request_music.request("get_musics",'','',musics_id).then((value) => {
+
+                    request_data.request("get_data", cookieUser).then((user_fav) => {
+
+                        let datas = [];
+                        if (user_fav !== null) {
+                            for (let i = 0; i < value.length; i++) {
+                                if (user_fav !== 1 && user_fav.favories.includes(value[i].id)) {
+                                    datas[i] = true;
+                                } else {
+                                    datas[i] = false;
+                                }
+                            }
+                        }
+                        res.render("recommendation_result.ejs", {
+                            datalist: value,
+                            user_datas: datas
+                        });
+
+                    });
+                });
+
+            } else {
+                res.redirect("/recommendation");
+            }
+
+        }, 1500);
+
+
+
+    } else {
+        if (typeof (req.body.id_fav) !== undefined && req.body.action === "add_fav") {
+            request_data.request("add_data", cookieUser, req.body.id_fav).then((value) => {
+                endPostRecom(req, res, cookieUser);
+            });
+        } else {
+            request_data.request("del_data", cookieUser, req.body.id_fav).then((value) => {
+                endPostRecom(req, res, cookieUser);
+            });
+        }
+    }
+});
+//fin de retour de la page recommendation
+function endPostRecom(req, res, cookieUser) {
+
+    let user_datas = null;
+    request_data.request("get_data", cookieUser).then((value) => {
+        user_datas = value;
+        let datalist = JSON.parse(req.body.recom_datas.replace(/#/gi, "'"));
+
+        let datas = [];
+        if (user_datas !== null) {
+            for (let i = 0; i < datalist.length; i++) {
+                if (user_datas !== 1 && user_datas.favories.includes(datalist[i].id)) {
+                    datas[i] = true;
+                } else {
+                    datas[i] = false;
+                }
+            }
+        }
+        res.render('recommendation_result.ejs', {
+            datalist : datalist,
+            user_datas: datas
+        });
+    });
+}
+
+function getRecomMusics (id) {
+
+}
+
+
+
+
+
+//--------------------------------------------------
 //retour de la page de changement de mot de passe
 router.post("/password", (req, res) => {
     if (typeof (req.headers.cookie) === "undefined") {
@@ -442,74 +539,4 @@ router.post("/password", (req, res) => {
 
 });
 
-
 module.exports = router;
-
-
-/*
-router.post("/",[
-    check('firstName')
-        .isLength({ min: 1 })
-        .withMessage('Please enter a name'),
-    check('lastName')
-        .isLength({ min: 1 })
-        .withMessage('Please enter a lastName'),
-],(req,res) => {
-    const errors = validationResult(req);
-
-    if (errors.isEmpty()) {
-        res.render('index2.ejs',{user: undefined});
-    } else {
-        console.log(req.body);
-        console.log(errors);
-        res.render('index2.ejs', {user: "erreur ! pas de saisie suffisante"});
-    }});
-
-router.get ('/2', (req, res) => {
-    res.render('index2.ejs');
-
-});
-
-router.get('/login',
-    (req,res) => {
-    res.render('login.ejs');
-    })
-
-router.post('/2',[
-    check('firstName')
-        .isLength({ min: 1 })
-        .withMessage('Please enter a name'),
-    check('lastName')
-        .isLength({ min: 1 })
-        .withMessage('Please enter a lastName'),
-],(req,res) => {
-    const errors = validationResult(req);
-
-    if (errors.isEmpty()) {
-        res.render('index2.ejs',{user: undefined});
-    } else {
-        console.log(req.body);
-        console.log(errors);
-        res.render('index2.ejs', {user: "erreur ! pas de saisie suffisante"});
-    }});
-
-router.post("/login",[
-    check('firstName')
-        .isLength({ min: 1 })
-        .withMessage('Please enter a name'),
-    check('lastName')
-        .isLength({ min: 1 })
-        .withMessage('Please enter a lastName'),
-],(req,res) => {
-    const errors = validationResult(req);
-
-    if (errors.isEmpty()) {
-        res.render('login.ejs',{user: undefined});
-    } else {
-        console.log(req.body);
-        console.log(errors);
-        res.render('login.ejs',{user: "erreur ! pas de saisie suffisante"});
-    }
-
-});
-*/

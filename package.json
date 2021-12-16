@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "nodemon start.js"
+    "watch": "nodemon --ext js,json,ejs,py start.js"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +24,7 @@
     "hash.js": "^1.1.7"
   },
   "devDependencies": {
+    "hash.js": "^1.1.7",
     "nodemon": "^2.0.12"
   }
 }

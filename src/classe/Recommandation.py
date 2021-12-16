@@ -15,7 +15,7 @@ from sklearn.model_selection import train_test_split
 class Recommandation:
 
     def __init__(self):
-        self.data = pd.read_csv(os.path.abspath("/home/aafcjm/public_html/input/musiquecompile/dataCompile.csv"))
+        self.data = pd.read_csv(os.path.abspath("input/musiquecompile/dataCompile.csv"))
         self.isPreprocessed = False
         self.isPreprocessedByStyleMusique = False
 
@@ -26,7 +26,7 @@ class Recommandation:
 
     def preprocessingByStyleMusique(self):
         self.isPreprocessedByStyleMusique = True
-        dataFrame = pd.read_csv(os.path.abspath("/home/aafcjm/public_html/input/train.csv"))
+        dataFrame = pd.read_csv(os.path.abspath("input/train.csv"))
         standardisationSpotifyData = dataFrame.drop(dataFrame.columns[:3], axis=1)
         y_data = standardisationSpotifyData["Class"]  # Fait la list des class de type de musique
         musiqueStatistiqueData = standardisationSpotifyData.drop("Class", axis=1)

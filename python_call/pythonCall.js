@@ -1,43 +1,48 @@
 const assert = require("assert");
 const spawn = require('child_process').spawn;
 
-let retourPython = "";
+let retourPython = [];
 let launched = false;
 let process;
 
 module.exports.retourPython = retourPython;
-module.exports.process = process;
+
+module.exports.launched = launched;
 
 module.exports.childPythonLaunch = async function childPythonLaunch() {
-    process = spawn('python3.7',["/home/aafcjm/public_html/src/Main.py"]);
+    process = spawn('python3.7',["src/Main.py"]);
 
     process.stdout.on('data', function(data) {
-        retourPython = "";
-        if (data.toString() === "lancement Python") {
-            console.log(data.toString());
-            launched = true;
-        } else {
-            retourPython = data.toString();
-        }
+        console.log('stdout triggered');
+
+        console.log(data.toString());
+        console.log("datas ajoutés childLaunchProcess");
+        retourPython.push(data.toString());
+
 
     });
 
     process.stderr.on('data', function(data) {
         console.log(data.toString());
-    });
-};
+        process.kill('SIGINT');
+        childPythonLaunch();
 
-module.exports.getMusiqueSimilar = async function getMusiqueSimilar(musicId) {
-    retourPython != "";
+    });
+
+};
+module.exports.process = process;
+
+module.exports.getMusiqueSimilar = function getMusiqueSimilar(musicId) {
     process.stdin.write("getMusiqueSimilar:" + musicId + "\n");
 
 };
 
-module.exports.getRetour = async function getRetour() {
-    await process.stdout.on('data', (data) => {
-        retourPython = data.toString();
+module.exports.getRetour = function getRetour() {
+    process.stdout.on('data', function(data) {
+        retourPython.push(data.toString());
     })
-    };
+    return retourPython[retourPython.length - 1];
+}
 
 
 

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <link rel="stylesheet" href="static/my_css/list-groups.css">
+
+    <script>
+        if (typeof (document.cookie) !== "undefined") {
+            let lesCookies = document.cookie.split(';');
+            let user_exist = false;
+            for (i = 0; i < lesCookies.length; i++) {
+                if (lesCookies[i].startsWith("utilisateur=")) {
+                    user_exist = true;
+                    break;
+                }
+            }
+            if (!user_exist) {
+                window.location.replace("/login");
+            }
+        } else {
+            window.location.replace("/login");
+        }
+    </script>
+
+    <title>AAFCJM | Résultat Recommendation</title>
+
+    <%- include("balise_head.ejs") %>
+</head>
+<body>
+<%- include('barre_navigation.ejs') %>
+
+
+    <div class="text-center" style="visibility: visible" id="recom_result">
+
+        <% if(typeof (datalist) !== "undefined") {
+        if (datalist !== []) { %>
+
+            <div class="list-group">
+                <%
+                    var datas = datalist;
+                %>
+
+                <p style="margin: 20px;">Voici les musiques les plus similaires pour la musique "<%- datas[0].song_name %>"
+                    de "<%- datas[0].artiste_name %>"</p>
+
+                <%
+                for (var i = 1; i < datas.length;i++) { %>
+
+                    <div class="d-flex gap-2 w-100 justify-content-between list-group-item list-group-item-action d-flex gap-3 py-2"
+                         aria-current="true">
+                        <div>
+                            <p class="mb-0" style="text-align: left!important;"><%- datas[i].song_name %></p>
+                            <p class="mb-0 opacity-75" style="text-align: left!important;"><%- datas[i].artiste_name %></p>
+                            <div style="text-align: left!important;">
+                                <iframe src="https://open.spotify.com/embed/track/<%- datas[i].id %>"
+                                        style="text-align: left!important;" width="300px" height="80px"
+                                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+                            </div>
+
+                        </div>
+
+                        <form method="post" action="/recommendation">
+
+                            <input type="hidden" value="<%- datas[i].id %>" name="id_fav">
+                            <input type="hidden" value='<%- JSON.stringify(datas).replace(/'/gi,"#") %>' name="recom_datas">
+
+                            <input type="hidden" name="action"
+                            <% if(typeof (user_datas) !== "undefined" && !user_datas[i]) { %> value="add_fav"
+                            <% } else { %> value="del_fav"
+                                    <% } %>
+                            >
+
+                            <input type="image" id="action_fav" style="width:55px; height:55px"
+
+                            <% if(typeof (user_datas) !== "undefined" && !user_datas[i]) { %>
+                                   alt="Ajouter aux Favoris" src="images/Logo-plus.png">
+                            <% } else { %>
+                                alt="Supprimer des Favoris" src="images/Logo-moins.png">
+                            <% } %>
+                        </form>
+
+                    </div>
+                <% } %>
+            </div>
+        <% } else { %>
+            <p>Aucune recommendation possible.</p>
+        <% } %>
+        <% } %>
+
+    </div>
+</body>
+</html>
