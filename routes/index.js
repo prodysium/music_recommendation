@@ -454,7 +454,7 @@ router.post("/recommendation", (req, res) => {
                 res.redirect("/recommendation");
             }
 
-        }, 1500);
+        }, 3000);
 
 
 

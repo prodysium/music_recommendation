@@ -29,7 +29,7 @@ class ContenueSimilar(Recommandation):
         self.df.drop(["time_signature"], axis=1, inplace=True)
 
         self.normalized_df = (self.df - self.df.mean()) / self.df.std()
-        self.normalized_df_and_limited = self.normalized_df[:1000]
+        self.normalized_df_and_limited = self.normalized_df[:100]
         matrice = self.normalized_df_and_limited.to_numpy()
 
         self.similariter = cosine_similarity(matrice)
@@ -112,6 +112,14 @@ class ContenueSimilar(Recommandation):
         data = {"title": [i for i in nameMusique_Weight.keys()], "weight": [i for i in nameMusique_Weight.values()]}
         return pd.DataFrame(data=data).set_index("title").sort_values("weight", ascending=False)
 
+    def getGraphAllMusique(self):
+        model = KMeans(n_clusters = 5)
+        model.fit(self.similariter)
+        data = model.fit_predict(self.similariter)
+        plt.figure(1,figsize=(30,20))
+        nx.draw_networkx(self.g, node_color=data)
+        plt.savefig("GraphLiasonWithGroups.png", dpi=150, format="png")
+
     """
         Genere un graphique avec les plus proche
     """
@@ -127,3 +135,4 @@ class ContenueSimilar(Recommandation):
         weights = [graphMusiqueChoose[u][v]['weight'] for u, v in graphMusiqueChoose.edges()]
         plt.figure(1, figsize=(30, 20))
         nx.draw_networkx(graphMusiqueChoose, width=[float(i) for i in weights])
+        plt.savefig(title+".png", dpi=150, format="PNG")

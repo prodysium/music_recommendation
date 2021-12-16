@@ -2,3 +2,4 @@ node_modules
 demo-node-app
 test_spotify_api
 package-lock.json
+*.png
